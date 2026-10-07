@@ -8,7 +8,7 @@ if 'logged_in' not in st.session_state: st.session_state['logged_in'] = False
 if 'final_exp' not in st.session_state:
     st.session_state['final_exp'] = "- Built scalable applications using Python handling 10k+ users\n- Improved system performance by 40% and reduced latency by 25%\n- Led development of 3+ modules in Agile team of 5"
 
-# SIDEBAR
+# SIDEBAR - CLEAN, NO PRO BUTTON
 with st.sidebar:
     st.title("Login")
     if not st.session_state['logged_in']:
@@ -25,15 +25,14 @@ with st.sidebar:
     st.divider()
     theme = st.radio("Theme", ["Light", "Dark"])
     st.divider()
-    if st.button("Unlock Pro Rs.99"):
-        st.balloons()
-        st.success("Pro Unlocked!")
+    st.caption("100% Free & Open Source ❤️")
+    st.caption("Built by Dileep")
 
 if theme == "Dark":
     st.markdown("<style>.stApp{background:#0e1117}</style>", unsafe_allow_html=True)
 
 st.title("🚀 AI Resume Builder - MEGA ULTRA")
-st.caption("Builder | Parser | Matcher | Cover Letter | Interview | Portfolio | Salary - FIXED PDF")
+st.caption("Builder | Parser | Matcher | Cover Letter | Interview | Portfolio | Salary - 100% FREE")
 
 t1, t2, t3, t4, t5, t6 = st.tabs(["Builder", "Parser", "Matcher", "Cover Letter", "Interview", "Portfolio & Salary"])
 
@@ -59,7 +58,6 @@ with t1:
     final_exp = st.text_area("Final Experience", value=st.session_state['final_exp'], height=150)
 
     if st.button("Generate PDF"):
-        # --- PDF FIXED - NO UNICODE ERROR ---
         safe_exp = final_exp.replace("•", "-").replace("–", "-").replace("—", "-")
         safe_exp = safe_exp.encode('latin-1', 'ignore').decode('latin-1')
         safe_name = name.encode('latin-1', 'ignore').decode('latin-1')
@@ -87,7 +85,6 @@ with t1:
 
         pdf_bytes = pdf.output(dest='S').encode('latin-1')
         st.download_button("⬇️ Download PDF", pdf_bytes, "resume.pdf", "application/pdf", type="primary")
-        st.success("PDF Ready! No error!")
 
 with t2:
     st.subheader("📄 Parser - Old Resume Upload")
@@ -153,4 +150,4 @@ with t6:
         st.metric("CTC", f"Rs {base:.1f} - {base+3.5:.1f} LPA")
         st.progress(min(90, int(base*8))/100)
 
-st.caption("Built by Dileep | MEGA ULTRA FIXED | PDF Error Solved")
+st.caption("Built by Dileep | MEGA ULTRA | 100% FREE - No Pro Button")
