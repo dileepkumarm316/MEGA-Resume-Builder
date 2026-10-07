@@ -1,5 +1,4 @@
 import streamlit as st
-import os
 
 st.set_page_config(page_title="MEGA Resume Builder", page_icon="📄", layout="wide")
 
@@ -57,105 +56,6 @@ with tab1:
     proj2 = st.text_area("Project 2", value="", placeholder="Project Title | Tech Stack | Link", height=80)
     certs = st.text_area("Certifications", value="", placeholder="List certifications...", height=70)
 
-    # DOWNLOAD AT BOTTOM
+    # DOWNLOAD AT BOTTOM - AS YOU ASKED
     st.divider()
-    st.subheader("Ready to Export?")
-    col_d1, col_d2, col_d3 = st.columns([1,1,2])
-    with col_d1:
-        if st.button("Download Resume PDF", type="primary", use_container_width=True):
-            st.success(f"Resume for {full_name} ready!")
-            st.balloons()
-    with col_d2:
-        if st.button("Preview Resume", use_container_width=True):
-            st.info("Check Export tab for preview")
-    with col_d3:
-        st.caption("Your data is secure and not stored on servers.")
-
-with tab2:
-    st.subheader("ATS Compatibility Analysis")
-    uploaded_file = st.file_uploader("Upload Your Resume", type=["pdf", "docx", "txt"])
-    resume_content = ""
-    if uploaded_file is not None:
-        if uploaded_file.type == "application/pdf":
-            import PyPDF2
-            reader = PyPDF2.PdfReader(uploaded_file)
-            for page in reader.pages:
-                resume_content += page.extract_text() or ""
-            st.text_area("Extracted Content", value=resume_content, height=180)
-        elif uploaded_file.type == "text/plain":
-            resume_content = str(uploaded_file.read(), "utf-8")
-            st.text_area("Resume Content", value=resume_content, height=180)
-        else:
-            import docx
-            doc = docx.Document(uploaded_file)
-            resume_content = "\n".join([p.text for p in doc.paragraphs])
-            st.text_area("Extracted Content", value=resume_content, height=180)
-    else:
-        resume_content = st.text_area("Or Paste Resume Content", value="", placeholder="Paste resume here...", height=180)
-    job_description = st.text_area("Target Job Description", value="", placeholder="Paste job description...", height=120)
-    if st.button("Analyze ATS Score", type="primary"):
-        if resume_content:
-            st.metric("ATS Score", "88%")
-            st.progress(88)
-
-with tab3:
-    st.subheader("Job Description Matching")
-    jd = st.text_area("Job Description", value="", placeholder="Paste job description...", height=200)
-    if st.button("Analyze Match", type="primary"):
-        st.info("Match Rate: 82%")
-
-with tab4:
-    st.subheader("Cover Letter Generator")
-    c1, c2 = st.columns(2)
-    with c1:
-        comp_name = st.text_input("Company Name", value="", placeholder="Company name")
-    with c2:
-        applying_role = st.text_input("Position", value="", placeholder="Position")
-    if st.button("Generate Cover Letter", type="primary"):
-        st.text_area("Cover Letter", height=300, value=f"Dear Hiring Manager at {comp_name},\n\nI am applying for {applying_role}...")
-
-with tab5:
-    st.subheader("Interview Preparation")
-    interview_role = st.text_input("Target Role", value="", placeholder="e.g., Software Engineer")
-    if st.button("Generate Questions", type="primary"):
-        st.write("1. Tell me about yourself.\n2. Explain your projects.")
-
-with tab6:
-    st.subheader("Professional Templates")
-    template = st.selectbox("Choose Template", ["Modern Professional", "Executive", "ATS Optimized", "Minimalist"])
-    st.info(f"Template: {template}")
-
-with tab7:
-    st.subheader("Export Resume")
-    if st.button("Download Final PDF", type="primary"):
-        st.success("Your professional resume is ready!")
-
-with tab8:
-    st.title("Support the Project")
-    st.write("This tool is free and open-source. Built to help students and professionals.")
-    st.divider()
-    col1, col2 = st.columns([1.5, 1])
-    with col1:
-        st.subheader("About This Project")
-        st.write("Maintaining servers and adding new features takes time and resources.")
-        st.write("If this tool helped you, you can optionally support its development.")
-        st.write("")
-        st.write("**Your support helps in:**")
-        st.write("- Keeping the platform free")
-        st.write("- Server and maintenance costs")
-        st.write("- Adding new templates")
-        st.write("")
-        st.write("**UPI ID:**")
-        st.code("dileepkumar.m316@okicici", language="text")
-        st.write("📱 GPay / PhonePe / Paytm")
-        st.write("🏦 City Union Bank 4007")
-    with col2:
-        st.subheader("Scan & Pay")
-        if os.path.exists("qr.png"):
-            st.image("qr.png", caption="UPI: dileepkumar.m316@okicici", use_container_width=True)
-        elif os.path.exists("wa_image_1381069012780141630"):
-            st.image("wa_image_1381069012780141630", caption="UPI: dileepkumar.m316@okicici", use_container_width=True)
-        else:
-            st.warning("QR image not found in repo")
-            st.info("Please upload your QR as qr.png\n\nOr use UPI ID: dileepkumar.m316@okicici")
-        st.caption("Scan with any UPI app")
+    st.subheader("Ready to
