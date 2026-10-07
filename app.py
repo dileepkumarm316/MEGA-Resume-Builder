@@ -163,18 +163,21 @@ with t7:
         st.components.v1.html(html, height=400, scrolling=True)
 
 with t8:
-    st.subheader("💰 Salary Predictor - Chennai 2026")
+   with t8:
+    st.subheader("💰 Salary Predictor")
     exp = st.slider("Years Exp", 0, 10, 2)
     if st.button("Predict Salary", type="primary"):
-        base = 4.5 + exp*1.2
-        if "python" in skills.lower(): base += 2.5
-        if "aws" in skills.lower(): base += 2.0
-        if "react" in skills.lower(): base += 1.5
-        if "docker" in skills.lower(): base += 1.0
+        base = 4.5+exp*1.2
+        if "python" in skills.lower(): base+=2.5
+        if "aws" in skills.lower(): base+=2.0
+        if "react" in skills.lower(): base+=1.5
+        st.metric("CTC", f"Rs {base:.1f} - {base+4:.1f} LPA")
+        st.progress(min(95,int(base*8))/100)
 
-        st.metric("Estimated CTC", f"Rs {base:.1f} - {base+4:.1f} LPA")
-        st.progress(min(95, int(base*8))/100)
-        st.info("💡 Add AWS + System Design = +3 LPA")
-        st.link_button("💸 Donate Rs.50 (Support)", "https://www.buymeacoffee.com/")
-
-st.caption("Built by Dileep M | MEGA V2 | 8 Features ✅")
+    st.divider()
+    st.subheader("❤️ Pudichiruntha Support pannu da!")
+    upi_pay_link = f"upi://pay?pa={MY_UPI_ID}&pn=Dileep%20Kumar%20M&cu=INR&tn=Resume%20Builder%20Support"
+    st.link_button("💸 GPay / PhonePe - Support Pannu da 🙏", upi_pay_link, type="primary")
+    st.success(f"✅ Direct to: {MY_UPI_ID}")
+    st.code(f"UPI: {MY_UPI_ID}", language=None)
+    st.caption("Rs.1 kooda okay da! Evlo venumo support pannalaam! ❤️")
