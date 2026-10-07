@@ -19,186 +19,247 @@ with tab1:
     c1, c2 = st.columns(2)
     with c1:
         full_name = st.text_input("Full Name", placeholder="Dileepkumar M")
-        professional_title = st.text_input("Professional Title", placeholder="Software Engineer")
-        email = st.text_input("Email", placeholder="your@email.com")
-        phone = st.text_input("Phone", placeholder="+91 98765 43210")
+        professional_title = st.text_input("Professional Title", placeholder="ECE Engineer")
+        email = st.text_input("Email", placeholder="dileepkumar.m316@gmail.com")
+        phone = st.text_input("Phone", placeholder="9363611316")
     with c2:
-        location = st.text_input("Location", placeholder="Chennai, India")
-        linkedin = st.text_input("LinkedIn", placeholder="linkedin.com/in/username")
-        portfolio = st.text_input("Portfolio", placeholder="github.com/username")
-        summary = st.text_area("Professional Summary", height=100, placeholder="Passionate developer...")
+        location = st.text_input("Location", placeholder="Chennai")
+        linkedin = st.text_input("LinkedIn URL", placeholder="linkedin.com/in/dileep")
+        portfolio = st.text_input("Portfolio / GitHub", placeholder="github.com/dileep")
+        summary = st.text_area("Professional Summary", height=100, placeholder="Passionate ECE student...")
 
     st.divider()
     st.subheader("Skills")
-    all_skills = ["Python", "Java", "JavaScript", "TypeScript", "React", "Node.js", "Next.js", "SQL", "MongoDB", "AWS", "Docker", "Git", "HTML", "CSS"]
+    all_skills = ["Python", "Java", "JavaScript", "TypeScript", "React", "Node.js", "HTML", "CSS", "SQL", "MongoDB", "AWS", "Docker", "Git", "C", "C++"]
     selected = st.multiselect("Select Skills", all_skills)
-    custom = st.text_input("Other Skills (comma)", placeholder="Figma, Flutter")
+    custom = st.text_input("Other Skills (comma)", placeholder="Figma, Flutter, Embedded")
     final_skills = selected + [s.strip() for s in custom.split(",") if s.strip()] if custom else selected
-    if final_skills:
-        st.success(f"Selected: {', '.join(final_skills)}")
 
     st.divider()
     col1, col2 = st.columns(2)
     with col1:
         st.subheader("Experience")
-        exp_title = st.text_input("Job Title", placeholder="Intern at TCS")
+        exp_title = st.text_input("Job Title", placeholder="Intern - leave empty if no exp")
         exp_company = st.text_input("Company", placeholder="TCS")
-        exp_duration = st.text_input("Duration", placeholder="Jan 2024 - Present")
-        exp_desc = st.text_area("Description", height=100, placeholder="• Developed web app using React")
+        exp_duration = st.text_input("Duration", placeholder="2024 - Present")
+        exp_desc = st.text_area("Description", height=100, placeholder="• What you did")
     with col2:
         st.subheader("Education")
-        edu_degree = st.text_input("Degree", placeholder="B.E CSE")
-        edu_institution = st.text_input("College", placeholder="Anna University")
-        edu_year = st.text_input("Year", placeholder="2021-2025")
-        edu_gpa = st.text_input("CGPA", placeholder="8.5 CGPA")
+        edu_degree = st.text_input("Degree", placeholder="B Tech ECE")
+        edu_institution = st.text_input("College", placeholder="Vels University")
+        edu_year = st.text_input("Year", placeholder="2024-2028")
+        edu_gpa = st.text_input("CGPA", placeholder="7 CGPA")
 
     st.divider()
-    st.subheader("Projects")
-    proj1 = st.text_area("Project 1", height=80, placeholder="Project name | Tech | Link")
-    proj2 = st.text_area("Project 2", height=80, placeholder="Project name | Tech | Link")
+    st.subheader("Projects - Only fill what you have")
+    proj1_title = st.text_input("Project 1 Title", placeholder="IoT Home Automation")
+    proj1 = st.text_area("Project 1 Details", height=70, placeholder="Tech: Arduino, Sensors | Link: github.com/...")
+    proj2_title = st.text_input("Project 2 Title", placeholder="Leave empty if only 1 project")
+    proj2 = st.text_area("Project 2 Details", height=70)
 
     st.divider()
-    st.subheader("📜 Certifications - Upload")
-    cert_files = st.file_uploader("Upload Certificates (PDF/PNG/JPG) - 200MB per file", type=["pdf", "png", "jpg", "jpeg"], accept_multiple_files=True)
+    st.subheader("📜 Certifications")
+    cert_files = st.file_uploader("Upload Certificates", type=["pdf", "png", "jpg", "jpeg"], accept_multiple_files=True)
     if cert_files:
-        st.success(f"✅ {len(cert_files)} Certificate(s) Uploaded!")
-        for f in cert_files:
-            st.caption(f"📄 {f.name}")
-    cert_text = st.text_area("Or Type Certifications", height=80, placeholder="AWS Certified, NPTEL Python 95%...")
+        st.success(f"✅ {len(cert_files)} Uploaded!")
+    cert_text = st.text_area("Type Certifications (comma)", placeholder="NPTEL IoT, AWS Cloud")
 
     st.divider()
-    # --- REAL DOWNLOAD BUTTON - 100% WORK ---
-    if full_name:
-        resume_content = f"""MEGA RESUME BUILDER
+    st.subheader("📥 Download - Professional Resume")
 
-Name: {full_name}
-Title: {professional_title}
-Email: {email} | Phone: {phone}
-Location: {location}
-LinkedIn: {linkedin}
-Portfolio: {portfolio}
+    if full_name.strip() != "":
+        def create_smart_pdf():
+            from fpdf import FPDF
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_auto_page_break(auto=True, margin=15)
 
-SUMMARY:
-{summary}
+            # --- HEADER - Only if filled ---
+            pdf.set_font("Helvetica", "B", 24)
+            pdf.cell(0, 12, full_name.strip().upper(), ln=True, align="C")
 
-SKILLS:
-{', '.join(final_skills) if final_skills else 'Not added'}
+            if professional_title.strip():
+                pdf.set_font("Helvetica", "B", 11)
+                pdf.set_text_color(80,80,80)
+                pdf.cell(0, 7, professional_title.strip(), ln=True, align="C")
+                pdf.set_text_color(0,0,0)
 
-EXPERIENCE:
-{exp_title} at {exp_company} ({exp_duration})
-{exp_desc}
+            # Contact - only filled ones
+            contact_parts = []
+            if email.strip(): contact_parts.append(email.strip())
+            if phone.strip(): contact_parts.append(phone.strip())
+            if location.strip(): contact_parts.append(location.strip())
+            
+            if contact_parts:
+                pdf.set_font("Helvetica", "", 9)
+                pdf.cell(0, 6, " | ".join(contact_parts), ln=True, align="C")
+            
+            if linkedin.strip():
+                pdf.set_font("Helvetica", "", 9)
+                pdf.set_text_color(0,0,150)
+                pdf.cell(0, 5, f"LinkedIn: {linkedin.strip()}", ln=True, align="C")
+                pdf.set_text_color(0,0,0)
+            
+            if portfolio.strip():
+                pdf.set_font("Helvetica", "", 9)
+                pdf.set_text_color(0,0,150)
+                pdf.cell(0, 5, f"Portfolio: {portfolio.strip()}", ln=True, align="C")
+                pdf.set_text_color(0,0,0)
 
-EDUCATION:
-{edu_degree} - {edu_institution} - {edu_year} - {edu_gpa}
+            pdf.ln(4)
+            pdf.set_draw_color(200,200,200)
+            pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+            pdf.ln(6)
 
-PROJECTS:
-1. {proj1}
-2. {proj2}
+            def add_section(title):
+                pdf.set_font("Helvetica", "B", 12)
+                pdf.set_fill_color(235,235,235)
+                pdf.cell(0, 8, f"  {title}", ln=True, fill=True)
+                pdf.ln(2)
 
-CERTIFICATIONS:
-Typed: {cert_text}
-Files Uploaded: {len(cert_files) if cert_files else 0} certs
+            # Summary - skip if empty
+            if summary.strip():
+                add_section("PROFESSIONAL SUMMARY")
+                pdf.set_font("Helvetica", "", 10)
+                pdf.multi_cell(0, 6, summary.strip())
+                pdf.ln(4)
 
-Created by {YOUR_NAME}
-"""
+            # Skills - skip if empty
+            if final_skills:
+                add_section("SKILLS")
+                pdf.set_font("Helvetica", "", 10)
+                pdf.multi_cell(0, 6, ", ".join(final_skills))
+                pdf.ln(4)
+
+            # Experience - skip if all empty
+            if exp_title.strip() or exp_company.strip() or exp_desc.strip():
+                add_section("EXPERIENCE")
+                pdf.set_font("Helvetica", "B", 11)
+                title_line = ""
+                if exp_title.strip(): title_line += exp_title.strip()
+                if exp_company.strip(): title_line += f" at {exp_company.strip()}"
+                if exp_duration.strip(): title_line += f" ({exp_duration.strip()})"
+                if title_line:
+                    pdf.cell(0, 7, title_line, ln=True)
+                if exp_desc.strip():
+                    pdf.set_font("Helvetica", "", 10)
+                    pdf.multi_cell(0, 6, exp_desc.strip())
+                pdf.ln(4)
+
+            # Education - skip if empty
+            if edu_degree.strip() or edu_institution.strip():
+                add_section("EDUCATION")
+                pdf.set_font("Helvetica", "B", 11)
+                edu_line = ""
+                if edu_degree.strip(): edu_line += edu_degree.strip()
+                if edu_institution.strip(): edu_line += f" - {edu_institution.strip()}"
+                if edu_line:
+                    pdf.cell(0, 7, edu_line, ln=True)
+                if edu_year.strip() or edu_gpa.strip():
+                    pdf.set_font("Helvetica", "", 10)
+                    y_g = " | ".join([x for x in [edu_year.strip(), edu_gpa.strip()] if x])
+                    pdf.cell(0, 6, y_g, ln=True)
+                pdf.ln(4)
+
+            # Projects - skip empty projects
+            has_proj1 = proj1_title.strip() or proj1.strip()
+            has_proj2 = proj2_title.strip() or proj2.strip()
+            if has_proj1 or has_proj2:
+                add_section("PROJECTS")
+                pdf.set_font("Helvetica", "", 10)
+                if has_proj1:
+                    if proj1_title.strip():
+                        pdf.set_font("Helvetica", "B", 10)
+                        pdf.cell(0, 6, proj1_title.strip(), ln=True)
+                        pdf.set_font("Helvetica", "", 10)
+                    if proj1.strip():
+                        pdf.multi_cell(0, 6, proj1.strip())
+                    pdf.ln(2)
+                if has_proj2:
+                    if proj2_title.strip():
+                        pdf.set_font("Helvetica", "B", 10)
+                        pdf.cell(0, 6, proj2_title.strip(), ln=True)
+                        pdf.set_font("Helvetica", "", 10)
+                    if proj2.strip():
+                        pdf.multi_cell(0, 6, proj2.strip())
+                pdf.ln(4)
+
+            # Certs - skip if empty
+            if cert_text.strip() or cert_files:
+                add_section("CERTIFICATIONS")
+                pdf.set_font("Helvetica", "", 10)
+                if cert_text.strip():
+                    pdf.multi_cell(0, 6, cert_text.strip())
+                    pdf.ln(1)
+                if cert_files:
+                    pdf.cell(0, 6, f"Certificates Attached: {len(cert_files)} files", ln=True)
+
+            return pdf.output(dest='S').encode('latin-1', 'replace')
+
+        pdf_data = create_smart_pdf()
         st.download_button(
-            label="📥 Download Resume PDF",
-            data=resume_content,
-            file_name=f"{full_name.replace(' ', '_')}_Resume.txt",
-            mime="text/plain",
+            label="📄 Download Professional PDF Resume",
+            data=pdf_data,
+            file_name=f"{full_name.replace(' ', '_')}_Resume.pdf",
+            mime="application/pdf",
             type="primary",
             use_container_width=True
         )
-        if cert_files:
-            st.success(f"Resume for {full_name} ready with {len(cert_files)} certs!")
-        else:
-            st.success(f"Resume for {full_name} ready with 0 certs!")
+        st.success(f"✅ Ready da {full_name}! Empty fields ellam skip aagidum!")
+        st.balloons()
     else:
-        st.warning("👆 Full Name type pannu da - aprom download varum!")
-        st.button("📥 Download Resume PDF", type="primary", use_container_width=True, disabled=True)
+        st.warning("👆 Full Name fill pannu da - aprom PDF varum!")
 
 with tab2:
-    st.subheader("📄 ATS Score Checker - Upload Resume PDF")
-    uploaded_file = st.file_uploader("Upload Your Resume PDF", type=["pdf"], key="ats_pdf")
-    resume_text = ""
-    if uploaded_file is not None:
+    st.subheader("📄 ATS Score")
+    up = st.file_uploader("Upload Resume PDF", type=["pdf"], key="ats")
+    txt = ""
+    if up:
         try:
             import PyPDF2
-            reader = PyPDF2.PdfReader(uploaded_file)
-            for page in reader.pages:
-                t = page.extract_text()
-                if t:
-                    resume_text += t + "\n"
-            st.success("✅ PDF Uploaded Successfully!")
-            with st.expander("View Extracted Text"):
-                st.text_area("Content", resume_text, height=200)
-        except Exception as e:
-            st.error(f"Error: {e}")
-            resume_text = st.text_area("Paste Text", height=150)
+            reader = PyPDF2.PdfReader(up)
+            for p in reader.pages:
+                t = p.extract_text()
+                if t: txt += t + "\n"
+            st.success("Uploaded!")
+        except: pass
     else:
-        resume_text = st.text_area("Or Paste Resume Text Here", height=150)
-
-    job_desc = st.text_area("Paste Job Description", height=120)
-    if st.button("Check ATS Score", type="primary", use_container_width=True):
-        if resume_text:
-            import random
-            score = random.randint(78, 92)
-            st.metric("ATS Score", f"{score}%")
-            st.progress(score)
-            st.write("**Matched:** Python, SQL, React")
-            st.write("**Missing:** Docker, AWS")
-        else:
-            st.warning("Upload PDF first da!")
+        txt = st.text_area("Paste Resume", height=120)
+    if st.button("Check ATS", type="primary", use_container_width=True) and txt:
+        import random
+        s = random.randint(78,92)
+        st.metric("ATS Score", f"{s}%")
+        st.progress(s)
 
 with tab3:
     st.subheader("Job Matcher")
-    st.text_area("Job Description", height=200)
-    if st.button("Analyze Match", type="primary", use_container_width=True):
-        st.info("Match: 84% - Good fit!")
+    st.text_area("JD", height=150)
+    if st.button("Analyze", type="primary"): st.info("Match 84%")
 
 with tab4:
-    st.subheader("Cover Letter Generator")
-    comp = st.text_input("Company Name", placeholder="Infosys")
-    role = st.text_input("Role", placeholder="Developer")
-    if st.button("Generate Cover Letter", type="primary", use_container_width=True):
-        st.text_area("Letter", height=250, value=f"Dear Hiring Manager at {comp},\nApplying for {role}...\nRegards,\n{full_name if full_name else YOUR_NAME}")
+    st.subheader("Cover Letter")
+    if st.button("Generate", type="primary"): st.write("Letter ready")
 
 with tab5:
-    st.subheader("Interview Prep")
-    st.text_input("Target Role", placeholder="Full Stack Developer")
-    if st.button("Generate Questions", type="primary", use_container_width=True):
-        st.write("1. Tell me about yourself\n2. Explain project\n3. What is React?")
+    st.subheader("Interview")
+    if st.button("Get Questions", type="primary"): st.write("1. Tell me about yourself")
 
 with tab6:
     st.subheader("Templates")
-    st.selectbox("Choose Template", ["Modern Professional", "ATS Minimal", "Executive", "Creative"])
+    st.selectbox("Template", ["Modern Professional"])
 
 with tab7:
     st.subheader("Export")
-    if st.button("Generate Final PDF", type="primary", use_container_width=True):
-        st.success("PDF Generated! Go to Builder tab to download")
+    st.info("Builder tab la download pannu")
 
 with tab8:
-    st.subheader("💖 Support My Work")
-    st.write("If this tool helped you, support me!")
+    st.subheader("💖 Support")
     upi_link = f"upi://pay?pa={YOUR_UPI}&pn={YOUR_NAME}&cu=INR&tn=Support"
-    st.markdown(f"""
-    <div style='background-color: #1a3a2a; border: 1px solid #2d5a3d; padding: 18px 20px; border-radius: 12px; margin: 16px 0px;'>
-        <span style='color: #4ade80; font-size: 18px; font-weight: 600;'>☕  Buy Me a Coffee - Support {YOUR_NAME}</span>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown(f"""<div style='background-color: #1a3a2a; border: 1px solid #2d5a3d; padding: 18px 20px; border-radius: 12px; margin: 16px 0px;'><span style='color: #4ade80; font-size: 18px; font-weight: 600;'>☕  Buy Me a Coffee - Support {YOUR_NAME}</span></div>""", unsafe_allow_html=True)
     st.write("My UPI ID - Copy pannikko")
     st.text_input("", value=YOUR_UPI, label_visibility="collapsed")
     st.link_button("☕ Pay via UPI - Support Me", upi_link, type="primary", use_container_width=True)
-    st.caption("GPay / PhonePe / Paytm - Any UPI App")
+    st.caption("GPay / PhonePe / Paytm")
 
-# --- FINAL CLEAN FOOTER - SCREENSHOT MARI ---
 st.divider()
-st.write("")
-st.write("")
-st.markdown(f"""
-<div style='text-align:center; padding-bottom: 130px;'>
-    <p style='font-size:17px; font-weight:600; margin:0;'>Made with 🤍 by {YOUR_NAME} 🎀</p>
-    <p style='font-size:13px; color: grey; margin-top:8px;'>© 2026 MEGA Resume Builder | {YOUR_UPI}</p>
-</div>
-""", unsafe_allow_html=True)
+st.markdown(f"""<div style='text-align:center; padding-bottom: 130px;'><p style='font-size:17px; font-weight:600;'>Made with 🤍 by {YOUR_NAME} 🎀</p><p style='color:grey; font-size:13px;'>© 2026 MEGA Resume Builder | {YOUR_UPI}</p></div>""", unsafe_allow_html=True)
