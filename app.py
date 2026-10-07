@@ -6,89 +6,74 @@ st.set_page_config(page_title="Mega Resume Builder", layout="wide", page_icon="�
 
 st.title("🚀 Mega Resume Builder")
 
-# Initialize
-if 'personal' not in st.session_state:
-    st.session_state.personal = {}
-
 # Tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["👤 Personal", "🎓 Education", "💼 Internship", "📝 Projects", "📄 Preview"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["Personal", "Education", "Internship", "Projects", "Preview"])
 
 with tab1:
     st.subheader("Personal Information")
     col1, col2 = st.columns(2)
     with col1:
-        name = st.text_input("Full Name *", value="", placeholder="e.g., Enter your full name")
-        email = st.text_input("Email Address *", value="", placeholder="e.g., your.email@example.com")
-        location = st.text_input("Location", value="", placeholder="e.g., Chennai, Tamil Nadu")
+        name = st.text_input("Full Name *", key="name", placeholder="e.g., Enter your full name")
+        email = st.text_input("Email Address *", key="email", placeholder="e.g., your.email@example.com")
+        location = st.text_input("Location", key="location", placeholder="e.g., Chennai, Tamil Nadu")
     with col2:
-        title = st.text_input("Professional Title", value="", placeholder="e.g., Electronics & Communication Engineer")
-        phone = st.text_input("Phone Number", value="", placeholder="e.g., +91 9876543210")
-        linkedin = st.text_input("LinkedIn", value="", placeholder="e.g., https://linkedin.com/in/yourname")
-    st.session_state.personal = {"name": name, "title": title, "email": email, "phone": phone, "location": location, "linkedin": linkedin}
+        title = st.text_input("Professional Title", key="title", placeholder="e.g., Electronics & Communication Engineer")
+        phone = st.text_input("Phone Number", key="phone", placeholder="e.g., +91 9876543210")
+        linkedin = st.text_input("LinkedIn Profile", key="linkedin", placeholder="e.g., https://linkedin.com/in/yourname")
 
 with tab2:
-    # --- FIXED EDUCATION SECTION - NO PERSONAL DATA ---
     st.subheader("Education")
-    degree = st.text_input("Degree / Program", value="", placeholder="e.g., B.Tech - Electronics and Communication Engineering")
-    college = st.text_input("College / University", value="", placeholder="e.g., Vels University, Chennai")
-    edu_year = st.text_input("Duration", value="", placeholder="e.g., 2022-2026")
-    cgpa = st.text_input("CGPA / Percentage", value="", placeholder="e.g., CGPA: 8.5 / 10")
-    st.session_state.education = {"degree": degree, "college": college, "year": edu_year, "cgpa": cgpa}
+    degree = st.text_input("Degree / Program", key="degree", placeholder="e.g., B.Tech - Electronics and Communication Engineering")
+    college = st.text_input("College / University", key="college", placeholder="e.g., Vels University, Chennai")
+    edu_year = st.text_input("Duration", key="edu_year", placeholder="e.g., 2022-2026")
+    cgpa = st.text_input("CGPA / Percentage", key="cgpa", placeholder="e.g., CGPA: 8.5 / 10")
 
 with tab3:
-    # --- FIXED INTERNSHIP SECTION - FROM YOUR SCREENSHOT - NO PERSONAL DATA ---
     st.subheader("Internships / Training")
-    
-    role = st.text_input("Role / Position", value="", placeholder="e.g., Embedded Systems Intern")
-    org = st.text_input("Organization Name", value="", placeholder="e.g., TCS, ISRO, Vels University")
-    duration = st.text_input("Duration", value="", placeholder="e.g., May 2024 - July 2024")
-    resp = st.text_area("Key Responsibilities & Achievements", value="", placeholder="• Developed IoT based home automation system\n• Collaborated with team of 4 members\n• Improved efficiency by 20%")
-    st.session_state.intern = {"role": role, "org": org, "duration": duration, "resp": resp}
+    role = st.text_input("Role / Position", key="role", placeholder="e.g., Embedded Systems Intern")
+    org = st.text_input("Organization Name", key="org", placeholder="e.g., TCS, ISRO, Vels University")
+    duration = st.text_input("Internship Duration", key="duration", placeholder="e.g., May 2024 - July 2024")
+    resp = st.text_area("Key Responsibilities & Achievements", key="resp", placeholder="• Developed IoT based home automation system\n• Collaborated with team of 4 members\n• Improved efficiency by 20%")
 
 with tab4:
     st.subheader("Projects")
-    proj_title = st.text_input("Project Title", value="", placeholder="e.g., IoT Based Home Automation")
-    proj_desc = st.text_area("Description", value="", placeholder="e.g., Built using Arduino, ESP32 and sensors...")
-    skills = st.text_input("Skills", value="", placeholder="e.g., Embedded C, Arduino, IoT, Python")
+    proj_title = st.text_input("Project Title", key="proj_title", placeholder="e.g., IoT Based Home Automation")
+    proj_desc = st.text_area("Project Description", key="proj_desc", placeholder="e.g., Built using Arduino, ESP32 and sensors...")
+    skills = st.text_input("Skills Used", key="skills", placeholder="e.g., Embedded C, Arduino, IoT, Python")
 
 with tab5:
     st.subheader("Preview & Export")
-    p = st.session_state.personal
-    e = st.session_state.get('education', {})
-    i = st.session_state.get('intern', {})
-    
-    if p.get('name'):
+    if name and email:
         with st.container(border=True):
-            st.write(f"**{p['name']}** - {p['title']}")
-            st.write(f"{p['email']} | {p['phone']} | {p['location']}")
+            st.write(f"**{name}** - {title}")
+            st.write(f"📧 {email} | 📞 {phone} | 📍 {location}")
+            st.write(f"🔗 {linkedin}")
             st.divider()
-            st.write(f"**Education:** {e.get('degree','')} - {e.get('college','')} ({e.get('year','')})")
+            st.write(f"**Education:** {degree} - {college} ({edu_year}) - {cgpa}")
             st.divider()
-            st.write(f"**Internship:** {i.get('role','')} at {i.get('org','')} ({i.get('duration','')})")
-            st.write(i.get('resp',''))
+            st.write(f"**Internship:** {role} at {org} ({duration})")
+            st.write(resp)
+            st.divider()
+            st.write(f"**Project:** {proj_title}")
+            st.write(proj_desc)
         
-        if st.button("📥 Download PDF", type="primary"):
+        if st.button("📥 Download PDF", type="primary", use_container_width=True):
             pdf = FPDF()
             pdf.add_page()
             pdf.set_font("Arial", "B", 16)
-            pdf.cell(0, 10, p['name'], ln=True, align='C')
+            pdf.cell(0, 10, name, ln=True, align='C')
             pdf.set_font("Arial", "", 11)
-            pdf.cell(0, 8, f"{p['title']} | {p['email']} | {p['phone']}", ln=True, align='C')
+            pdf.cell(0, 8, f"{title} | {email} | {phone}", ln=True, align='C')
+            pdf.cell(0, 8, f"{location} | {linkedin}", ln=True, align='C')
             pdf.ln(10)
             pdf.set_font("Arial", "B", 12)
-            pdf.cell(0, 8, "Education:", ln=True)
+            pdf.cell(0, 8, f"Education: {degree} - {college} - {edu_year}", ln=True)
             pdf.set_font("Arial", "", 11)
-            pdf.cell(0, 8, f"{e.get('degree','')} - {e.get('college','')} - {e.get('year','')}", ln=True)
-            pdf.ln(5)
-            pdf.set_font("Arial", "B", 12)
-            pdf.cell(0, 8, "Internship:", ln=True)
-            pdf.set_font("Arial", "", 11)
-            pdf.cell(0, 8, f"{i.get('role','')} at {i.get('org','')} - {i.get('duration','')}", ln=True)
-            pdf.multi_cell(0, 8, i.get('resp',''))
+            pdf.multi_cell(0, 8, f"Internship: {role} at {org} - {duration}\n{resp}\n\nProject: {proj_title}\n{proj_desc}")
             
             pdf_bytes = pdf.output(dest='S').encode('latin-1')
             b64 = base64.b64encode(pdf_bytes).decode()
-            st.markdown(f'<a href="data:application/octet-stream;base64,{b64}" download="{p["name"]}_Resume.pdf">Click to Download PDF</a>', unsafe_allow_html=True)
-            st.success("PDF Ready!")
+            st.markdown(f'<a href="data:application/octet-stream;base64,{b64}" download="{name}_Resume.pdf">Click to Download PDF</a>', unsafe_allow_html=True)
+            st.success("PDF Ready! ✅")
     else:
-        st.info("Please fill Personal Info to see preview")
+        st.info("Please fill Full Name and Email in Personal tab to see preview")
