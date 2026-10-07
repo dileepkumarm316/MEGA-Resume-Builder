@@ -10,8 +10,8 @@ if 'final_exp' not in st.session_state:
 st.title("🚀 AI Resume Builder")
 st.caption("100% FREE - No API Key")
 
-# TABS
-t1, t2, t3, t4, t5 = st.tabs(["Builder", "Matcher", "Cover Letter", "Interview", "Portfolio"])
+# 6 TABS - SALARY ADDED!
+t1, t2, t3, t4, t5, t6 = st.tabs(["Builder", "Matcher", "Cover Letter", "Interview", "Portfolio", "💰 Salary"])
 
 with t1:
     name = st.text_input("Full Name", "Dileep Kumar M")
@@ -25,7 +25,6 @@ with t1:
         fs = skills.split(',')[0] if skills else "Python"
         enhanced = f"- Built scalable applications using {fs} handling 10k+ users\n- Improved system performance by 40% and reduced latency by 25%\n- Led development of 3+ modules in Agile team of 5"
         st.session_state['final_exp'] = enhanced
-        st.success("Enhanced!")
         st.code(enhanced)
         st.balloons()
 
@@ -39,21 +38,14 @@ with t1:
         pdf.set_font("Arial", '', 10)
         pdf.cell(0, 6, f"{role} | {email} | {phone}", ln=True, align='C')
         pdf.ln(8)
-        pdf.set_font("Arial", 'B', 12)
-        pdf.cell(0, 8, "SKILLS", ln=True)
-        pdf.set_font("Arial", '', 10)
-        pdf.multi_cell(0, 6, skills)
+        pdf.set_font("Arial", 'B', 12); pdf.cell(0, 8, "SKILLS", ln=True)
+        pdf.set_font("Arial", '', 10); pdf.multi_cell(0, 6, skills)
         pdf.ln(4)
-        pdf.set_font("Arial", 'B', 12)
-        pdf.cell(0, 8, "EXPERIENCE", ln=True)
-        pdf.set_font("Arial", '', 10)
-        pdf.multi_cell(0, 6, final_exp)
-
-        # FINAL FIX - THIS LINE SOLVES EVERYTHING
+        pdf.set_font("Arial", 'B', 12); pdf.cell(0, 8, "EXPERIENCE", ln=True)
+        pdf.set_font("Arial", '', 10); pdf.multi_cell(0, 6, final_exp)
         pdf_data = bytes(pdf.output())
-
         st.download_button("⬇️ Download PDF", pdf_data, "resume.pdf", "application/pdf", type="primary")
-        st.success("PDF Ready! Download pannu da! ✅")
+        st.success("PDF Ready! ✅")
 
 with t2:
     st.subheader("🎯 Job Matcher")
@@ -74,14 +66,67 @@ with t3:
         st.text_area("Cover Letter", cl, height=200)
 
 with t4:
-    st.subheader("🎤 Interview Q&A")
+    st.subheader("🎤 Interview Q&A - 10 Questions")
     if st.button("Generate Questions"):
-        st.text_area("Q&A", f"Q: Tell me about {skills.split(',')[0]}?\nA: {final_exp.split(chr(10))[0]}", height=200)
+        s1 = skills.split(',')[0] if skills else "Python"
+        s2 = skills.split(',')[1] if len(skills.split(','))>1 else "React"
+
+        qa = f"""Q1: Tell me about yourself?
+A: I am {name}, a {role} skilled in {skills}. Recently {final_exp.split(chr(10))[0].replace('-','').strip()}
+
+Q2: Explain your project using {s1}?
+A: {final_exp.split(chr(10))[0].replace('-','').strip()} for 10k+ users. Used STAR method to deliver.
+
+Q3: How did you improve performance by 40%?
+A: Did profiling, added caching (Redis), optimized DB queries, used indexing.
+
+Q4: What is your experience with {s2}?
+A: Built 3+ modules in Agile team of 5, integrated with backend APIs, improved UI performance.
+
+Q5: What is Agile?
+A: Iterative development, sprints, daily standup, retrospectives. I worked in Agile team of 5.
+
+Q6: How do you handle pressure?
+A: Prioritize tasks, break into small tickets, communicate blockers early.
+
+Q7: Why should we hire you?
+A: I have {skills} and proven {final_exp.split(chr(10))[1].replace('-','').strip().lower() if len(final_exp.split(chr(10)))>1 else 'performance improvement experience'}
+
+Q8: Where do you see yourself in 5 years?
+A: Tech Lead, mentoring juniors, building scalable systems.
+
+Q9: Expected CTC?
+A: Based on Chennai market for {role}, expecting competitive range.
+
+Q10: Any questions for us?
+A: What is tech stack? Team size? Growth opportunities?
+"""
+        st.text_area("Q&A - 10 Questions", qa, height=400)
 
 with t5:
     st.subheader("🌐 Portfolio")
     if st.button("Generate Portfolio"):
-        html = f"<html><body style='padding:40px'><h1>{name}</h1><h3>{role}</h3><p>{skills}</p><p>{final_exp.replace(chr(10),'<br>')}</p></body></html>"
+        html = f"<html><body style='padding:40px; font-family:Arial'><h1>{name}</h1><h3>{role}</h3><p>{skills}</p><p>{final_exp.replace(chr(10),'<br>')}</p></body></html>"
         st.download_button("Download portfolio.html", html, "portfolio.html", "text/html", type="primary")
 
-st.caption("Built by Dileep | 100% FREE")
+with t6:
+    st.subheader("💰 Salary Predictor - Chennai 2026")
+    st.write(f"Role: {role} | Skills: {skills}")
+    if st.button("Predict My Salary", type="primary"):
+        base = 4.5
+        if "python" in skills.lower(): base += 2.5
+        if "react" in skills.lower(): base += 1.5
+        if "sql" in skills.lower(): base += 1.0
+        if "aws" in skills.lower(): base += 2.0
+        if "java" in skills.lower(): base += 1.5
+
+        low = base
+        high = base + 4.0
+
+        st.metric("Estimated CTC (Chennai)", f"Rs {low:.1f} - {high:.1f} LPA")
+        st.progress(min(95, int(base*10))/100)
+
+        st.info(f"💡 Tips to increase: Add AWS + Cloud, System Design, LeetCode 200+")
+        st.success(f"Top Companies: Zoho, Freshworks, TCS, Infosys - Hiring {role}")
+
+st.caption("Built by Dileep | 100% FREE | 10 Q&A + Salary Fixed ✅")
