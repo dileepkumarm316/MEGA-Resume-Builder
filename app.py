@@ -4,7 +4,7 @@ import re
 
 st.set_page_config(page_title="Resume AI - Mega", page_icon="🚀", layout="centered")
 
-# ✅ KASU UN ACCOUNT KU DIRECT AH VARUM DA!
+# ✅ UN UPI - KASU DIRECT AH UN ACCOUNT KU VARUM
 MY_UPI_ID = "dileepkumar.m316@okicici"
 
 if 'final_exp' not in st.session_state:
@@ -108,11 +108,19 @@ with t8:
         st.progress(min(95,int(base*8))/100)
 
     st.divider()
-    st.markdown("### ❤️ Pudichiruntha Support pannu da!")
-    # 💸 KASU VARA LINK - NO AMOUNT - USER EVLO VENUMO PODALAAM!
-    upi_link = f"upi://pay?pa={MY_UPI_ID}&pn=Dileep%20Kumar%20M&cu=INR&tn=Resume%20Builder%20Support"
-    st.link_button("💸 GPay / PhonePe - Support Pannu da 🙏", upi_link, type="primary", use_container_width=True)
-    st.success(f"✅ Direct to your GPay: {MY_UPI_ID}")
-    st.code(f"UPI: {MY_UPI_ID} ", language=None)
+    # ✅ PROFESSIONAL DONATION - NOT BEGGING!
+    st.markdown("### ☕ Love this tool? Buy me a Coffee")
+    st.caption("This tool is 100% FREE forever. Your small support helps me keep building more free tools for students like you ❤️")
 
-st.caption(f"Built by Dileep M | UPI: {MY_UPI_ID} ✅")
+    # Direct GPay - click panna GPay app open aagum!
+    upi_link = f"upi://pay?pa={MY_UPI_ID}&pn=Dileep%20Kumar%20M&cu=INR&tn=Coffee%20Support%20Resume%20Builder"
+
+    c1, c2 = st.columns(2)
+    with c1:
+        st.link_button("☕ Donate - GPay / PhonePe", upi_link, type="primary", use_container_width=True)
+    with c2:
+        st.link_button("💙 Support Project", upi_link, use_container_width=True)
+
+    st.info("🔒 100% Secure UPI | Any amount you wish - Rs.10, Rs.50")
+
+st.caption("Built by Dileep M | Keep it FREE ❤️")
