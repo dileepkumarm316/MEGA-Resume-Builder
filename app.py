@@ -23,4 +23,4 @@ if st.button("Generate PRO Resume"):
     doc.add_paragraph(exp)
     bio = io.BytesIO()
     doc.save(bio)
-    st.download_button("Download", bio.getvalue(), "resume.docx")
+    st.download_button("Download",bio.getvalue(), "resume.docx")
