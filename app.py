@@ -124,17 +124,47 @@ with t8:
     st.info("🔒 100% Secure UPI | Any amount you wish - Rs.10, Rs.50")
 
 st.caption("Built by Dileep M | Keep it FREE ❤️")
-
 st.divider()
 st.divider()
 
-# SECRET ADMIN - UNAKKU MATTUM
+# --- REAL VISITOR COUNTER ---
+import os
+from datetime import datetime
+
+count_file = "visitor_count.txt"
+
+# File illa na create pannu
+if not os.path.exists(count_file):
+    with open(count_file, "w") as f:
+        f.write("0")
+
+# Read & Increment
+try:
+    with open(count_file, "r") as f:
+        count = int(f.read().strip() or "0")
+except:
+    count = 0
+
+# Oru visitor vantha +1 (session ku oru vaati)
+if "counted" not in st.session_state:
+    count += 1
+    with open(count_file, "w") as f:
+        f.write(str(count))
+    st.session_state["counted"] = True
+
+# --- SECRET ADMIN ---
 admin_code = st.text_input("🔑 Admin Code", type="password", placeholder="Enter code")
-if admin_code == "qwerty30":
-    st.success("Welcome Dileep! Admin Panel ✅")
-    c1, c2 = st.columns(2)
+
+if admin_code == "Qwerty30":
+    st.success(f"Welcome Dileep! ✅ | {datetime.now().strftime('%d-%m-%Y %H:%M')}")
+    
+    c1, c2, c3 = st.columns(3)
     with c1:
-        st.metric("Total Views", "127")
+        st.metric("🔴 LIVE Views", count)
     with c2:
-        st.metric("Downloads", "42")
-    st.bar_chart({"Mon": 10, "Tue": 23, "Wed": 45, "Today": 27})
+        st.metric("📅 Today", datetime.now().strftime("%d/%m"))
+    with c3:
+        st.metric("✅ Status", "LIVE")
+    
+    st.bar_chart({"Views": count})
+    st.caption(f"Last updated: {datetime.now().strftime('%H:%M:%S')}")
