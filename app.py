@@ -54,7 +54,8 @@ with t1:
 
     if st.button("Generate PDF"):
         try:
-            pdf = FPDF()
+                        # FINAL FIX - bytearray to bytes
+            pdf_bytes = bytes(pdf.output())
             pdf.add_page()
             pdf.set_font("Arial",'B',20)
             # SAFE TEXT - remove all unicode
