@@ -15,7 +15,6 @@ if st.button("Generate PRO Resume"):
     st.write(name, "-", role)
     st.write(skills)
     st.write(exp)
-    
     doc = Document()
     doc.add_heading(name, 0)
     doc.add_paragraph(role)
@@ -23,4 +22,4 @@ if st.button("Generate PRO Resume"):
     doc.add_paragraph(exp)
     bio = io.BytesIO()
     doc.save(bio)
-    st.download_button("Download",bio.getvalue(), "resume.docx")
+    st.download_button("Download",bio.getvalue(),"a.docx")
