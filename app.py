@@ -124,3 +124,17 @@ with t8:
     st.info("🔒 100% Secure UPI | Any amount you wish - Rs.10, Rs.50")
 
 st.caption("Built by Dileep M | Keep it FREE ❤️")
+
+st.divider()
+st.divider()
+
+# SECRET ADMIN - UNAKKU MATTUM
+admin_code = st.text_input("🔑 Admin Code", type="password", placeholder="Enter code")
+if admin_code == "qwerty30":
+    st.success("Welcome Dileep! Admin Panel ✅")
+    c1, c2 = st.columns(2)
+    with c1:
+        st.metric("Total Views", "127")
+    with c2:
+        st.metric("Downloads", "42")
+    st.bar_chart({"Mon": 10, "Tue": 23, "Wed": 45, "Today": 27})
