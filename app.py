@@ -32,10 +32,10 @@ with tab1:
     st.subheader("Personal Information")
     c1, c2 = st.columns(2)
     with c1:
-        full_name = st.text_input("Full Name *", placeholder="Dileepkumar M")
+        full_name = st.text_input("Full Name *", placeholder="Enter your Name")
         professional_title = st.text_input("Professional Title", placeholder="Electronics & Communication Engineer")
-        email = st.text_input("Email Address *", placeholder="dileepkumar.m316@gmail.com")
-        phone = st.text_input("Phone Number", placeholder="+91 9363611316")
+        email = st.text_input("Email Address *", placeholder="your email id")
+        phone = st.text_input("Phone Number", placeholder="+91 936*****8")
     with c2:
         location = st.text_input("Location", placeholder="Chennai, Tamil Nadu")
         linkedin = st.text_input("LinkedIn Profile URL", placeholder="https://linkedin.com/in/dileepkumar")
