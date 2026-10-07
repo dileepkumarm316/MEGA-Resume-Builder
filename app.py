@@ -2,28 +2,30 @@ import streamlit as st
 from fpdf import FPDF
 import re
 
-st.set_page_config(page_title="Resume AI", page_icon="🚀", layout="centered")
+st.set_page_config(page_title="Resume AI - Mega", page_icon="🚀", layout="centered")
 
 if 'final_exp' not in st.session_state:
     st.session_state['final_exp'] = "- Built scalable applications using Python handling 10k+ users\n- Improved system performance by 40%\n- Led development of 3+ modules in Agile team of 5"
 
-st.title("🚀 AI Resume Builder")
-st.caption("100% FREE - No API Key")
+st.title("🚀 AI Resume Builder - MEGA")
+st.caption("100% FREE - 8 Features!")
 
-# 6 TABS - SALARY ADDED!
-t1, t2, t3, t4, t5, t6 = st.tabs(["Builder", "Matcher", "Cover Letter", "Interview", "Portfolio", "💰 Salary"])
+t1, t2, t3, t4, t5, t6, t7, t8 = st.tabs([
+    "Builder", "ATS Score", "Matcher", "Cover Letter",
+    "Interview", "LinkedIn", "Portfolio", "💰 Salary"
+])
 
 with t1:
     name = st.text_input("Full Name", "Dileep Kumar M")
     role = st.text_input("Role", "Software Engineer")
     email = st.text_input("Email", "dileep@gmail.com")
     phone = st.text_input("Phone", "+91 98765 43210")
-    skills = st.text_input("Skills", "Python, React, SQL, AWS")
+    skills = st.text_input("Skills", "Python, React, SQL, AWS, Docker")
     raw = st.text_area("Your Experience Rough", "worked on python project made app faster")
 
     if st.button("✨ Enhance + Grammar Fix", type="primary"):
         fs = skills.split(',')[0] if skills else "Python"
-        enhanced = f"- Built scalable applications using {fs} handling 10k+ users\n- Improved system performance by 40% and reduced latency by 25%\n- Led development of 3+ modules in Agile team of 5"
+        enhanced = f"- Built scalable applications using {fs} handling 10k+ users\n- Improved system performance by 40% and reduced latency by 25%\n- Led development of 3+ modules in Agile team of 5 using {skills}\n- Implemented CI/CD pipeline and automated testing"
         st.session_state['final_exp'] = enhanced
         st.code(enhanced)
         st.balloons()
@@ -44,10 +46,46 @@ with t1:
         pdf.set_font("Arial", 'B', 12); pdf.cell(0, 8, "EXPERIENCE", ln=True)
         pdf.set_font("Arial", '', 10); pdf.multi_cell(0, 6, final_exp)
         pdf_data = bytes(pdf.output())
-        st.download_button("⬇️ Download PDF", pdf_data, "resume.pdf", "application/pdf", type="primary")
+
+        c1, c2 = st.columns(2)
+        with c1:
+            st.download_button("⬇️ Download PDF", pdf_data, "resume.pdf", "application/pdf", type="primary")
+        with c2:
+            wa_text = f"Hi, I'm {name} - {role}. My resume: Skills {skills}. Interested?"
+            wa_link = f"https://wa.me/?text={wa_text.replace(' ', '%20')}"
+            st.link_button("📱 WhatsApp Share", wa_link)
         st.success("PDF Ready! ✅")
 
 with t2:
+    st.subheader("🎯 ATS Score Checker - KILLER FEATURE!")
+    if st.button("Check ATS Score", type="primary"):
+        score = 50
+        feedback = []
+        if len(skills.split(',')) >= 4: score += 15
+        else: feedback.append("❌ Add 5+ skills da")
+        if len(final_exp) > 150: score += 15
+        else: feedback.append("❌ Experience too short")
+        if "python" in (skills+final_exp).lower(): score += 10
+        if "built" in final_exp.lower() or "improved" in final_exp.lower(): score += 10
+        else: feedback.append("❌ Use action words: Built, Improved, Led")
+
+        score = min(95, score)
+        st.metric("ATS SCORE", f"{score}/100")
+        st.progress(score/100)
+
+        if score >= 80:
+            st.success("🔥 SEMMA DA! Recruiter shortlist panniduvan!")
+        elif score >= 60:
+            st.warning("Decent da, konjam improve pannalam")
+        else:
+            st.error("Low da - skills add pannu!")
+
+        for f in feedback:
+            st.write(f)
+        if not feedback:
+            st.write("✅ All good da! Top 10% resume!")
+
+with t3:
     st.subheader("🎯 Job Matcher")
     jd = st.text_area("Paste JD", "Looking for Python, React, SQL...")
     if st.button("Check Match"):
@@ -57,76 +95,86 @@ with t2:
         st.progress(match/100)
         st.metric("Match", f"{match}%")
 
-with t3:
+with t4:
     st.subheader("✉️ Cover Letter")
     comp = st.text_input("Company", "Google")
     if st.button("Generate Cover Letter"):
         first = final_exp.split("\n")[0].replace("-","").strip()
-        cl = f"Dear Hiring Manager at {comp},\n\nI am excited to apply for {role}. With expertise in {skills}, I {first}.\n\nBest,\n{name}"
-        st.text_area("Cover Letter", cl, height=200)
-
-with t4:
-    st.subheader("🎤 Interview Q&A - 10 Questions")
-    if st.button("Generate Questions"):
-        s1 = skills.split(',')[0] if skills else "Python"
-        s2 = skills.split(',')[1] if len(skills.split(','))>1 else "React"
-
-        qa = f"""Q1: Tell me about yourself?
-A: I am {name}, a {role} skilled in {skills}. Recently {final_exp.split(chr(10))[0].replace('-','').strip()}
-
-Q2: Explain your project using {s1}?
-A: {final_exp.split(chr(10))[0].replace('-','').strip()} for 10k+ users. Used STAR method to deliver.
-
-Q3: How did you improve performance by 40%?
-A: Did profiling, added caching (Redis), optimized DB queries, used indexing.
-
-Q4: What is your experience with {s2}?
-A: Built 3+ modules in Agile team of 5, integrated with backend APIs, improved UI performance.
-
-Q5: What is Agile?
-A: Iterative development, sprints, daily standup, retrospectives. I worked in Agile team of 5.
-
-Q6: How do you handle pressure?
-A: Prioritize tasks, break into small tickets, communicate blockers early.
-
-Q7: Why should we hire you?
-A: I have {skills} and proven {final_exp.split(chr(10))[1].replace('-','').strip().lower() if len(final_exp.split(chr(10)))>1 else 'performance improvement experience'}
-
-Q8: Where do you see yourself in 5 years?
-A: Tech Lead, mentoring juniors, building scalable systems.
-
-Q9: Expected CTC?
-A: Based on Chennai market for {role}, expecting competitive range.
-
-Q10: Any questions for us?
-A: What is tech stack? Team size? Growth opportunities?
-"""
-        st.text_area("Q&A - 10 Questions", qa, height=400)
+        cl = f"Dear Hiring Manager at {comp},\n\nI am excited to apply for {role}. With expertise in {skills}, I {first}.\n\nI improved performance by 40% and led team of 5. Eager to bring same impact to {comp}.\n\nBest,\n{name}"
+        st.text_area("Cover Letter", cl, height=250)
+        wa_cl = f"Hi {comp} team, applying for {role}. {first}"
+        st.link_button("📱 Send via WhatsApp", f"https://wa.me/?text={wa_cl.replace(' ', '%20')}")
 
 with t5:
-    st.subheader("🌐 Portfolio")
-    if st.button("Generate Portfolio"):
-        html = f"<html><body style='padding:40px; font-family:Arial'><h1>{name}</h1><h3>{role}</h3><p>{skills}</p><p>{final_exp.replace(chr(10),'<br>')}</p></body></html>"
-        st.download_button("Download portfolio.html", html, "portfolio.html", "text/html", type="primary")
+    st.subheader("🎤 Interview Q&A - 10 Questions")
+    if st.button("Generate 10 Q&A"):
+        s1 = skills.split(',')[0] if skills else "Python"
+        qa = f"""Q1: Tell me about yourself?
+A: I am {name}, {role} skilled in {skills}.
+
+Q2: Explain {s1} project?
+A: {final_exp.split(chr(10))[0].replace('-','').strip()}
+
+Q3: How 40% improvement?
+A: Profiling, caching, indexing
+
+Q4: Agile experience?
+A: Led 5 members, sprints, standups
+
+Q5: Why hire you?
+A: {skills} + proven results
+
+Q6: Pressure handling?
+A: Prioritize, communicate
+
+Q7: {skills.split(',')[1] if len(skills.split(','))>1 else 'React'} experience?
+A: Built 3 modules, API integration
+
+Q8: 5 year goal?
+A: Tech Lead
+
+Q9: Expected CTC?
+A: Market competitive
+
+Q10: Questions for us?
+A: Tech stack? Growth?
+"""
+        st.text_area("10 Q&A", qa, height=400)
 
 with t6:
+    st.subheader("💼 LinkedIn Optimizer")
+    linkedin_bio = st.text_area("Paste your LinkedIn Bio", "Software Engineer | Python")
+    if st.button("Optimize LinkedIn"):
+        optimized = f"🚀 {role} | {skills} | Helping companies scale to 10k+ users | {final_exp.split(chr(10))[0].replace('-','').strip()} | Open to opportunities | Chennai"
+        st.success("Optimized Bio:")
+        st.code(optimized)
+        st.text_area("Headline Idea", f"{role} | {skills.split(',')[0]} Expert | 40% Performance Boost | {comp if 'comp' in locals() else 'Ex-Startup'}")
+
+with t7:
+    st.subheader("🌐 Portfolio + WhatsApp")
+    if st.button("Generate Portfolio"):
+        html = f"""<html><head><title>{name}</title></head>
+        <body style='padding:40px; font-family:Arial; max-width:800px; margin:auto'>
+        <h1>{name}</h1><h3>{role}</h3><p><b>{skills}</b></p>
+        <p>{final_exp.replace(chr(10),'<br>')}</p>
+        <hr><a href='https://wa.me/{phone.replace('+','').replace(' ','')}'>Contact on WhatsApp</a>
+        </body></html>"""
+        st.download_button("Download portfolio.html", html, "portfolio.html", "text/html", type="primary")
+        st.components.v1.html(html, height=400, scrolling=True)
+
+with t8:
     st.subheader("💰 Salary Predictor - Chennai 2026")
-    st.write(f"Role: {role} | Skills: {skills}")
-    if st.button("Predict My Salary", type="primary"):
-        base = 4.5
+    exp = st.slider("Years Exp", 0, 10, 2)
+    if st.button("Predict Salary", type="primary"):
+        base = 4.5 + exp*1.2
         if "python" in skills.lower(): base += 2.5
-        if "react" in skills.lower(): base += 1.5
-        if "sql" in skills.lower(): base += 1.0
         if "aws" in skills.lower(): base += 2.0
-        if "java" in skills.lower(): base += 1.5
+        if "react" in skills.lower(): base += 1.5
+        if "docker" in skills.lower(): base += 1.0
 
-        low = base
-        high = base + 4.0
+        st.metric("Estimated CTC", f"Rs {base:.1f} - {base+4:.1f} LPA")
+        st.progress(min(95, int(base*8))/100)
+        st.info("💡 Add AWS + System Design = +3 LPA")
+        st.link_button("💸 Donate Rs.50 (Support)", "https://www.buymeacoffee.com/")
 
-        st.metric("Estimated CTC (Chennai)", f"Rs {low:.1f} - {high:.1f} LPA")
-        st.progress(min(95, int(base*10))/100)
-
-        st.info(f"💡 Tips to increase: Add AWS + Cloud, System Design, LeetCode 200+")
-        st.success(f"Top Companies: Zoho, Freshworks, TCS, Infosys - Hiring {role}")
-
-st.caption("Built by Dileep | 100% FREE | 10 Q&A + Salary Fixed ✅")
+st.caption("Built by Dileep M | MEGA V2 | 8 Features ✅")
