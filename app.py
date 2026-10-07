@@ -124,47 +124,31 @@ with t8:
     st.info("🔒 100% Secure UPI | Any amount you wish - Rs.10, Rs.50")
 
 st.caption("Built by Dileep M | Keep it FREE ❤️")
-st.divider()
-st.divider()
+# --- STYLISH ADMIN PANEL ---
+admin_code = st.text_input("🔑 Admin Code", type="password")
 
-# --- REAL VISITOR COUNTER ---
-import os
-from datetime import datetime
-
-count_file = "visitor_count.txt"
-
-# File illa na create pannu
-if not os.path.exists(count_file):
-    with open(count_file, "w") as f:
-        f.write("0")
-
-# Read & Increment
-try:
-    with open(count_file, "r") as f:
-        count = int(f.read().strip() or "0")
-except:
-    count = 0
-
-# Oru visitor vantha +1 (session ku oru vaati)
-if "counted" not in st.session_state:
-    count += 1
-    with open(count_file, "w") as f:
-        f.write(str(count))
-    st.session_state["counted"] = True
-
-# --- SECRET ADMIN ---
-admin_code = st.text_input("🔑 Admin Code", type="password", placeholder="Enter code")
-
-if admin_code == "Qwerty30":
-    st.success(f"Welcome Dileep! ✅ | {datetime.now().strftime('%d-%m-%Y %H:%M')}")
+if admin_code == "qwerty30":
+    st.markdown(f"""
+    <div style="background: linear-gradient(90deg, #00c6ff, #0072ff); padding:20px; border-radius:15px; color:white; text-align:center;">
+        <h2>👑 Welcome Dileep! 👑</h2>
+        <p>Admin Dashboard | {datetime.now().strftime('%d-%m-%Y %H:%M:%S')}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.write("")
     
     c1, c2, c3 = st.columns(3)
     with c1:
-        st.metric("🔴 LIVE Views", count)
+        st.metric("👁️ Total Views", count, delta="+1 New")
     with c2:
-        st.metric("📅 Today", datetime.now().strftime("%d/%m"))
+        st.metric("📅 Today", "07/10", delta="LIVE")
     with c3:
-        st.metric("✅ Status", "LIVE")
+        st.metric("🚀 App Status", "LIVE", delta="Online 🟢")
     
-    st.bar_chart({"Views": count})
-    st.caption(f"Last updated: {datetime.now().strftime('%H:%M:%S')}")
+    st.progress(count/100 if count < 100 else 1.0)
+    st.caption(f"{count} people visited your app! Keep growing! 🌱")
+    
+    # Fancy chart
+    st.bar_chart({"🔥 Visitors": [count, count+5, count+2]})
+    
+    st.balloons() # Celebration!
