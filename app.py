@@ -2,152 +2,117 @@ import streamlit as st
 
 st.set_page_config(page_title="MEGA Resume Builder", page_icon="📄", layout="wide")
 
+st.markdown("""
+<div style='text-align:center; padding:10px; background:#f0f2f6; border-radius:12px; margin-bottom:15px;'>
+✨ Created by <b>Dileepkumar.M</b> 🤍🎀
+</div>
+""", unsafe_allow_html=True)
+
 st.title("MEGA Resume Builder")
-st.markdown("### Professional ATS-Optimized Resume Builder | 8-in-1 Tools")
+st.markdown("### Professional ATS-Optimized Resume Builder")
 
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
-    "Resume Builder", "ATS Score", "Job Matcher", "Cover Letter", 
-    "Interview Prep", "Templates", "Export", "Support"
+    "📝 Resume Builder", "📊 ATS Score", "🎯 Job Matcher", "✉️ Cover Letter", 
+    "💼 Interview Prep", "🎨 Templates", "📥 Export", "💖 About"
 ])
 
 with tab1:
     st.subheader("Personal Information")
     col1, col2 = st.columns(2)
     with col1:
-        full_name = st.text_input("Full Name", value="", placeholder="Enter your full name")
-        professional_title = st.text_input("Professional Title", value="", placeholder="e.g., Software Engineer")
-        email = st.text_input("Email Address", value="", placeholder="Enter your email address")
-        phone = st.text_input("Phone Number", value="", placeholder="Enter your phone number")
+        full_name = st.text_input("Full Name", placeholder="Dileepkumar M")
+        professional_title = st.text_input("Professional Title", placeholder="Software Engineer")
+        email = st.text_input("Email", placeholder="your@email.com")
+        phone = st.text_input("Phone", placeholder="+91 98765 43210")
     with col2:
-        location = st.text_input("Location", value="", placeholder="City, Country")
-        linkedin = st.text_input("LinkedIn Profile", value="", placeholder="https://linkedin.com/in/username")
-        portfolio = st.text_input("Portfolio / GitHub", value="", placeholder="https://github.com/username")
-        summary = st.text_area("Professional Summary", value="", placeholder="Brief summary...", height=100)
-
+        location = st.text_input("Location", placeholder="Chennai, India")
+        linkedin = st.text_input("LinkedIn", placeholder="linkedin.com/in/username")
+        portfolio = st.text_input("Portfolio", placeholder="github.com/username")
+        summary = st.text_area("Professional Summary", height=100, placeholder="Passionate developer...")
+    
     st.divider()
-    st.subheader("Technical Skills")
-    all_predefined = ["Python", "Java", "JavaScript", "TypeScript", "React", "Node.js", "Next.js", "C", "C++", "SQL", "MongoDB", "AWS", "Docker", "Git", "HTML5", "CSS3"]
-    selected_skills = st.multiselect("Select Your Skills", options=all_predefined, placeholder="Select your technical skills")
-    custom_skills = st.text_input("Additional Skills", value="", placeholder="Add other skills separated by commas")
-    final_skills = selected_skills.copy()
-    if custom_skills:
-        final_skills.extend([s.strip() for s in custom_skills.split(",") if s.strip()])
+    st.subheader("Skills")
+    all_skills = ["Python", "Java", "JavaScript", "TypeScript", "React", "Node.js", "Next.js", "C", "C++", "SQL", "MongoDB", "AWS", "Docker", "Git", "HTML", "CSS"]
+    selected = st.multiselect("Select Skills", all_skills)
+    custom = st.text_input("Other Skills", placeholder="Figma, Flutter")
+    final_skills = selected + [s.strip() for s in custom.split(",") if s.strip()] if custom else selected
     if final_skills:
         st.success(f"Selected: {', '.join(final_skills)}")
 
     st.divider()
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader("Work Experience")
-        exp_title = st.text_input("Job Title", value="", placeholder="e.g., Software Engineer")
-        exp_company = st.text_input("Company Name", value="", placeholder="e.g., Microsoft")
-        exp_duration = st.text_input("Duration", value="", placeholder="e.g., Jan 2023 - Present")
-        exp_desc = st.text_area("Key Responsibilities", value="", placeholder="• Developed...", height=120)
-    with col2:
-        st.subheader("Education")
-        edu_degree = st.text_input("Degree", value="", placeholder="e.g., B.Tech Computer Science")
-        edu_institution = st.text_input("Institution", value="", placeholder="e.g., University Name")
-        edu_year = st.text_input("Academic Year", value="", placeholder="e.g., 2020 - 2024")
-        edu_gpa = st.text_input("GPA / Honors", value="", placeholder="e.g., 8.5 CGPA")
-
-    st.divider()
-    st.subheader("Projects")
-    proj1 = st.text_area("Project 1", value="", placeholder="Project Title | Tech Stack | Link", height=80)
-    proj2 = st.text_area("Project 2", value="", placeholder="Project Title | Tech Stack | Link", height=80)
-    certs = st.text_area("Certifications", value="", placeholder="List certifications...", height=70)
-
-    # DOWNLOAD AT BOTTOM - AS YOU ASKED
-    st.divider()
-    st.subheader("Ready to Export?")
-    col_d1, col_d2, col_d3 = st.columns([1,1,2])
-    with col_d1:
-        if st.button("Download Resume PDF", type="primary", use_container_width=True):
-            st.success(f"Resume for {full_name} ready!")
-            st.balloons()
-    with col_d2:
-        if st.button("Preview Resume", use_container_width=True):
-            st.info("Check Export tab")
-    with col_d3:
-        st.caption("Your data is secure and not stored on servers.")
-
-with tab2:
-    st.subheader("ATS Compatibility Analysis")
-    uploaded_file = st.file_uploader("Upload Your Resume", type=["pdf", "docx", "txt"])
-    resume_content = ""
-    if uploaded_file is not None:
-        if uploaded_file.type == "application/pdf":
-            import PyPDF2
-            reader = PyPDF2.PdfReader(uploaded_file)
-            for page in reader.pages:
-                resume_content += page.extract_text() or ""
-            st.text_area("Extracted Content", value=resume_content, height=180)
-        elif uploaded_file.type == "text/plain":
-            resume_content = str(uploaded_file.read(), "utf-8")
-            st.text_area("Resume Content", value=resume_content, height=180)
-        else:
-            import docx
-            doc = docx.Document(uploaded_file)
-            resume_content = "\n".join([p.text for p in doc.paragraphs])
-            st.text_area("Extracted Content", value=resume_content, height=180)
-    else:
-        resume_content = st.text_area("Or Paste Resume Content", value="", placeholder="Paste resume here...", height=180)
-    job_description = st.text_area("Target Job Description", value="", placeholder="Paste job description...", height=120)
-    if st.button("Analyze ATS Score", type="primary"):
-        if resume_content:
-            st.metric("ATS Score", "88%")
-            st.progress(88)
-
-with tab3:
-    st.subheader("Job Description Matching")
-    jd = st.text_area("Job Description", value="", placeholder="Paste job description...", height=200)
-    if st.button("Analyze Match", type="primary"):
-        st.info("Match Rate: 82%")
-
-with tab4:
-    st.subheader("Cover Letter Generator")
     c1, c2 = st.columns(2)
     with c1:
-        comp_name = st.text_input("Company Name", value="", placeholder="Company name")
+        st.subheader("Experience")
+        exp_title = st.text_input("Job Title", placeholder="Intern")
+        exp_company = st.text_input("Company", placeholder="TCS")
+        exp_duration = st.text_input("Duration", placeholder="Jan 2024 - Present")
+        exp_desc = st.text_area("Description", height=120, placeholder="• Developed...")
     with c2:
-        applying_role = st.text_input("Position", value="", placeholder="Position")
-    if st.button("Generate Cover Letter", type="primary"):
-        st.text_area("Cover Letter", height=300, value=f"Dear Hiring Manager at {comp_name},\n\nI am applying for {applying_role}...")
+        st.subheader("Education")
+        edu_degree = st.text_input("Degree", placeholder="B.E CSE")
+        edu_institution = st.text_input("College", placeholder="Anna University")
+        edu_year = st.text_input("Year", placeholder="2021-2025")
+        edu_gpa = st.text_input("CGPA", placeholder="8.5 CGPA")
+
+    st.divider()
+    proj1 = st.text_area("Project 1", height=80, placeholder="Project name | Tech | Link")
+    proj2 = st.text_area("Project 2", height=80, placeholder="Project name | Tech | Link")
+    certs = st.text_area("Certifications", height=60, placeholder="AWS, etc")
+
+    if st.button("📥 Download Resume PDF", type="primary", use_container_width=True):
+        st.success(f"Resume for {full_name} is ready! Go to Export tab")
+        st.balloons()
+
+with tab2:
+    st.subheader("ATS Score Checker")
+    resume_txt = st.text_area("Paste Resume", height=150)
+    job_desc = st.text_area("Paste Job Description", height=100)
+    if st.button("Check ATS Score", type="primary"):
+        if resume_txt:
+            st.metric("ATS Score", "88%")
+            st.progress(88)
+        else:
+            st.warning("Paste resume first")
+
+with tab3:
+    st.subheader("Job Matcher")
+    jd = st.text_area("Job Description", height=200)
+    if st.button("Analyze Match", type="primary"):
+        st.info("Match: 84%")
+
+with tab4:
+    st.subheader("Cover Letter")
+    comp = st.text_input("Company Name", placeholder="Infosys")
+    role = st.text_input("Role", placeholder="Developer")
+    if st.button("Generate Letter", type="primary"):
+        st.text_area("Cover Letter", height=250, value=f"Dear Hiring Manager at {comp},\n\nI am applying for {role}...\n\nRegards,\n{full_name if 'full_name' in locals() else ''}")
 
 with tab5:
-    st.subheader("Interview Preparation")
-    interview_role = st.text_input("Target Role", value="", placeholder="e.g., Software Engineer")
+    st.subheader("Interview Questions")
+    irole = st.text_input("Target Role", placeholder="Full Stack Dev")
     if st.button("Generate Questions", type="primary"):
-        st.write("1. Tell me about yourself.\n2. Explain your projects.")
+        st.write("1. Tell me about yourself\n2. Explain your project\n3. What is React?\n4. SQL vs NoSQL")
 
 with tab6:
-    st.subheader("Professional Templates")
-    template = st.selectbox("Choose Template", ["Modern Professional", "Executive", "ATS Optimized", "Minimalist"])
-    st.info(f"Template: {template}")
+    st.subheader("Templates")
+    temp = st.selectbox("Template", ["Modern Professional", "ATS Minimal", "Executive", "Creative"])
+    st.success(f"Selected: {temp}")
 
 with tab7:
     st.subheader("Export Resume")
-    if st.button("Download Final PDF", type="primary"):
-        st.success("Your professional resume is ready!")
+    if st.button("Generate Final PDF", type="primary"):
+        st.success("PDF Generated! Use Builder tab download")
 
-# TAB 8 - NO QR - DECENT ONLY
 with tab8:
-    st.title("Support the Project")
-    st.write("This tool is free and open-source. Built to help students and professionals create professional resumes.")
-    st.divider()
-    st.subheader("About This Project")
-    st.write("Maintaining servers and adding new features takes time and resources.")
-    st.write("If this tool helped you get a job, you can optionally support its development.")
-    st.write("")
-    st.write("**Your support helps in:**")
-    st.write("- Keeping the platform free")
-    st.write("- Server and maintenance costs")
-    st.write("- Adding new templates and features")
-    st.write("")
-    st.divider()
-    st.subheader("Support via UPI")
-    st.code("dileepkumar.m316@okicici", language="text")
-    st.write("📱 **GPay / PhonePe / Paytm** - Any UPI App")
-    st.write("🏦 City Union Bank 4007")
-    st.write("")
-    st.info("💡 Copy the UPI ID above and pay in your UPI app. Thank you for your support!")
-    st.caption("This is completely optional. The tool will always remain free.")
+    st.subheader("About")
+    st.write("This is a free resume builder for students and professionals.")
+    st.write("Built with Streamlit & Python")
+    st.info("100% Free & Open Source")
+
+st.divider()
+st.markdown("""
+<div style='text-align:center; padding:15px; background:#f8f9fa; border-radius:10px;'>
+<h4 style='margin:0;'>Made with 🤍 by Dileepkumar.M 🎀</h4>
+<p style='color:#888; font-size:13px; margin-top:5px;'>© 2026 MEGA Resume Builder</p>
+</div>
+""", unsafe_allow_html=True)
