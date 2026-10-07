@@ -2,17 +2,16 @@ import streamlit as st
 
 st.set_page_config(page_title="MEGA Resume Builder", page_icon="📄", layout="wide")
 
-YOUR_UPI = "dileepkumar.m316@okaxis"
 YOUR_NAME = "Dileepkumar.M"
-
-st.success(f"✨ Created by {YOUR_NAME} 🤍🎀")
+YOUR_UPI = "dileepkumar.m316@okaxis"
 
 st.title("MEGA Resume Builder")
 st.write("Professional ATS-Optimized Resume Builder")
+st.success(f"✨ Created by {YOUR_NAME} 🤍")
 
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "📝 Builder", "📊 ATS Score", "🎯 Job Matcher", "✉️ Cover Letter", 
-    "💼 Interview", "🎨 Templates", "📥 Export", "💖 Support Me"
+    "💼 Interview", "🎨 Templates", "📥 Export", "💖 Support"
 ])
 
 with tab1:
@@ -27,11 +26,11 @@ with tab1:
         location = st.text_input("Location", placeholder="Chennai, India")
         linkedin = st.text_input("LinkedIn", placeholder="linkedin.com/in/username")
         portfolio = st.text_input("Portfolio", placeholder="github.com/username")
-        summary = st.text_area("Professional Summary", height=100, placeholder="Passionate developer...")
+        summary = st.text_area("Professional Summary", height=100)
 
     st.divider()
     st.subheader("Skills")
-    all_skills = ["Python", "Java", "JavaScript", "TypeScript", "React", "Node.js", "Next.js", "SQL", "MongoDB", "AWS", "Docker", "Git", "HTML", "CSS"]
+    all_skills = ["Python", "Java", "JavaScript", "React", "Node.js", "SQL", "MongoDB", "AWS", "Docker", "Git"]
     selected = st.multiselect("Select Skills", all_skills)
     custom = st.text_input("Other Skills (comma)", placeholder="Figma, Flutter")
     final_skills = selected + [s.strip() for s in custom.split(",") if s.strip()] if custom else selected
@@ -60,50 +59,44 @@ with tab1:
 
     st.divider()
     st.subheader("📜 Certifications - Upload")
-    cert_files = st.file_uploader("Upload Certificates (PDF/PNG/JPG) - Multiple allowed", type=["pdf", "png", "jpg", "jpeg"], accept_multiple_files=True)
+    cert_files = st.file_uploader("Upload Certificates (PDF/PNG) - Multiple", type=["pdf", "png", "jpg", "jpeg"], accept_multiple_files=True)
     if cert_files:
         st.success(f"✅ {len(cert_files)} Certificate(s) Uploaded!")
         for f in cert_files:
             st.caption(f"📄 {f.name}")
-    cert_text = st.text_area("Or Type Certifications", height=80, placeholder="AWS Certified, NPTEL Python 95%...")
+    cert_text = st.text_area("Or Type Certifications", height=80, placeholder="AWS, NPTEL...")
 
-    st.write("")
     if st.button("📥 Download Resume PDF", type="primary", use_container_width=True):
-        st.success(f"Resume ready with {len(cert_files) if cert_files else 0} certs!")
+        st.success("Resume Ready!")
         st.balloons()
 
 with tab2:
     st.subheader("📄 ATS Score - Upload Resume PDF")
-    uploaded_file = st.file_uploader("Upload Your Resume PDF", type=["pdf"], key="ats_pdf")
+    uploaded_file = st.file_uploader("Upload Your Resume PDF", type=["pdf"])
     resume_text = ""
-    if uploaded_file is not None:
+    if uploaded_file:
         try:
             import PyPDF2
             reader = PyPDF2.PdfReader(uploaded_file)
-            for page in reader.pages:
-                text = page.extract_text()
-                if text:
-                    resume_text += text + "\n"
+            for p in reader.pages:
+                t = p.extract_text()
+                if t:
+                    resume_text += t + "\n"
             st.success("✅ PDF Uploaded!")
-            with st.expander("View Extracted Text"):
+            with st.expander("View Text"):
                 st.text_area("Content", resume_text, height=200)
-        except Exception as e:
-            st.error(f"Error: {e}")
+        except:
             resume_text = st.text_area("Paste Resume Text", height=150)
     else:
-        resume_text = st.text_area("Or Paste Resume Text Here", height=150, placeholder="Paste resume...")
+        resume_text = st.text_area("Paste Resume Text Here", height=150)
 
-    job_desc = st.text_area("Paste Job Description", height=120, placeholder="Paste JD...")
+    job_desc = st.text_area("Paste Job Description", height=120)
     if st.button("Check ATS Score", type="primary", use_container_width=True):
         if resume_text:
             import random
             score = random.randint(78, 92)
             st.metric("ATS Score", f"{score}%")
             st.progress(score)
-            if score > 85:
-                st.success("Excellent! ATS Friendly da!")
-            else:
-                st.warning("Add more keywords from JD")
             st.write("**Matched:** Python, SQL, React")
             st.write("**Missing:** Docker, AWS")
         else:
@@ -111,49 +104,47 @@ with tab2:
 
 with tab3:
     st.subheader("Job Matcher")
-    jd = st.text_area("Job Description", height=200)
-    if st.button("Analyze Match", type="primary", use_container_width=True):
-        st.info("Match: 84% - Good fit!")
+    st.text_area("JD", height=150)
+    if st.button("Analyze Match", type="primary"):
+        st.info("Match 84%")
 
 with tab4:
     st.subheader("Cover Letter")
-    comp = st.text_input("Company Name", placeholder="Infosys")
-    role = st.text_input("Role", placeholder="Developer")
-    if st.button("Generate Letter", type="primary", use_container_width=True):
-        st.text_area("Cover Letter", height=250, value=f"Dear Hiring Manager at {comp},\n\nApplying for {role}...\n\nRegards,\n{full_name if full_name else YOUR_NAME}")
+    st.text_input("Company Name", placeholder="Infosys")
+    st.text_input("Role", placeholder="Developer")
+    if st.button("Generate Letter", type="primary"):
+        st.text_area("Letter", height=200)
 
 with tab5:
     st.subheader("Interview Prep")
-    irole = st.text_input("Target Role", placeholder="Full Stack Dev")
-    if st.button("Generate Questions", type="primary", use_container_width=True):
-        st.write("1. Tell me about yourself\n2. Explain your project\n3. What is React?")
+    st.text_input("Target Role", placeholder="Full Stack Dev")
+    if st.button("Get Questions", type="primary"):
+        st.write("1. Tell me about yourself\n2. Explain project")
 
 with tab6:
     st.subheader("Templates")
-    temp = st.selectbox("Template", ["Modern Professional", "ATS Minimal", "Executive", "Creative"])
-    st.success(f"Selected: {temp}")
+    st.selectbox("Template", ["Modern Professional", "ATS Minimal", "Executive"])
 
 with tab7:
-    st.subheader("Export Resume")
-    if st.button("Generate Final PDF", type="primary", use_container_width=True):
+    st.subheader("Export")
+    if st.button("Generate Final PDF", type="primary"):
         st.success("PDF Generated!")
 
 with tab8:
     st.subheader("About")
-    st.write("Free resume builder for students and professionals.")
-    st.info("100% Free & Open Source")
-    st.divider()
-    st.subheader("💖 Support My Work")
-    st.write("If this tool helped you, support me!")
-    st.success(f"☕ Buy Me a Coffee - Support {YOUR_NAME}")
-    st.text_input("My UPI ID - Copy pannikko", value=YOUR_UPI)
-    upi_link = f"upi://pay?pa={YOUR_UPI}&pn={YOUR_NAME}&cu=INR&tn=Support"
-    st.link_button("☕ Pay via UPI - Support Me", upi_link, type="primary", use_container_width=True)
-    st.caption("GPay / PhonePe / Paytm - Any UPI App")
-    st.code(YOUR_UPI, language="text")
+    st.info("100% Free & Open Source - Built for Students")
+    st.write("Built with Streamlit & Python")
+    st.write(f"Support UPI: {YOUR_UPI}")
 
+# --- FINAL CLEAN FOOTER ---
 st.divider()
-st.success(f"Made with 🤍 by {YOUR_NAME} 🎀 | UPI: {YOUR_UPI} | © 2026")
 st.write("")
 st.write("")
-st.write("")
+
+st.markdown(f"""
+<div style='text-align:center; padding-bottom: 120px;'>
+    <p style='font-size:17px; font-weight:600;'>Made with 🤍 by {YOUR_NAME} 🎀</p>
+    <p style='font-size:14px; color:grey;'>© 2026 MEGA Resume Builder | Free for Students</p>
+    <p style='font-size:12px; color:grey; margin-top:10px;'>{YOUR_UPI}</p>
+</div>
+""", unsafe_allow_html=True)
