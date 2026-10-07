@@ -3,7 +3,7 @@
 An AI-powered resume builder that creates professional, ATS-friendly resumes in seconds.
 
 ## Live Demo
-Live App: [Click Here](YOUR STREAMLIT LINK HERE)
+Live App: https://resume-30.streamlit.app/
 
 ## Features
 - AI generates professional resume content
