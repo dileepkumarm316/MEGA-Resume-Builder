@@ -4,6 +4,7 @@ import re
 
 st.set_page_config(page_title="Resume AI - Mega", page_icon="🚀", layout="centered")
 
+st.markdown('<meta name="google-site-verification" content="MzjabqztKfzXbeu7LhnMQp9wH8Y2X_jobR6jE8L_zZo" />', unsafe_allow_html=True)
 # ✅ UN UPI - KASU DIRECT AH UN ACCOUNT KU VARUM
 MY_UPI_ID = "dileepkumar.m316@okicici"
 
