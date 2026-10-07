@@ -113,6 +113,6 @@ with t8:
     upi_link = f"upi://pay?pa={MY_UPI_ID}&pn=Dileep%20Kumar%20M&cu=INR&tn=Resume%20Builder%20Support"
     st.link_button("💸 GPay / PhonePe - Support Pannu da 🙏", upi_link, type="primary", use_container_width=True)
     st.success(f"✅ Direct to your GPay: {MY_UPI_ID}")
-    st.code(f"UPI: {MY_UPI_ID} - Rs.1 kooda okay da!", language=None)
+    st.code(f"UPI: {MY_UPI_ID} ", language=None)
 
 st.caption(f"Built by Dileep M | UPI: {MY_UPI_ID} ✅")
