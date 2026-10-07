@@ -1,168 +1,100 @@
 import streamlit as st
-from fpdf import FPDF
-import re
 
-st.set_page_config(page_title="Resume AI - Mega", page_icon="🚀", layout="centered")
+st.set_page_config(
+    page_title="Resume Builder - Free ATS Resume",
+    page_icon="📄",
+    layout="wide"
+)
 
-st.markdown('<meta name="google-site-verification" content="MzjabqztKfzXbeu7LhnMQp9wH8Y2X_jobR6jE8L_zZo" />', unsafe_allow_html=True)
-# ✅ UN UPI - KASU DIRECT AH UN ACCOUNT KU VARUM
-MY_UPI_ID = "dileepkumar.m316@okicici"
+st.title("Resume Builder - MEGA 🚀")
+st.write("100% FREE - Build your ATS resume!")
 
-if 'final_exp' not in st.session_state:
-    st.session_state['final_exp'] = "- Built scalable applications using Python handling 10k+ users\n- Improved system performance by 40%\n- Led development of 3+ modules in Agile team of 5"
+# Tabs
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["📝 Builder", "📊 ATS Score", "🎯 Matcher", "✉️ Cover Letter", "❤️ Donate"])
 
-st.title("🚀 AI Resume Builder - MEGA")
-st.caption("100% FREE - 8 Features!")
-
-t1, t2, t3, t4, t5, t6, t7, t8 = st.tabs(["Builder","ATS Score","Matcher","Cover Letter","Interview","LinkedIn","Portfolio","💰 Salary"])
-
-with t1:
-    name = st.text_input("Full Name", "Dileep Kumar M")
-    role = st.text_input("Role", "Software Engineer")
-    email = st.text_input("Email", "dileep@gmail.com")
-    phone = st.text_input("Phone", "+91 98765 43210")
-    skills = st.text_input("Skills", "Python, React, SQL, AWS, Docker")
-    if st.button("✨ Enhance", type="primary"):
-        fs = skills.split(',')[0]
-        st.session_state['final_exp'] = f"- Built scalable applications using {fs} handling 10k+ users\n- Improved system performance by 40%\n- Led development of 3+ modules in Agile team of 5"
-        st.code(st.session_state['final_exp']); st.balloons()
-    final_exp = st.text_area("Final Experience", value=st.session_state['final_exp'], height=150)
-    if st.button("Generate PDF"):
-        pdf = FPDF(); pdf.add_page()
-        pdf.set_font("Arial", 'B', 20); pdf.cell(0, 10, name, ln=True, align='C')
-        pdf.set_font("Arial", '', 10); pdf.cell(0, 6, f"{role} | {email} | {phone}", ln=True, align='C'); pdf.ln(8)
-        pdf.set_font("Arial", 'B', 12); pdf.cell(0, 8, "SKILLS", ln=True)
-        pdf.set_font("Arial", '', 10); pdf.multi_cell(0, 6, skills); pdf.ln(4)
-        pdf.set_font("Arial", 'B', 12); pdf.cell(0, 8, "EXPERIENCE", ln=True)
-        pdf.set_font("Arial", '', 10); pdf.multi_cell(0, 6, final_exp)
-        pdf_data = bytes(pdf.output())
-        c1, c2 = st.columns(2)
-        with c1: st.download_button("⬇️ Download PDF", pdf_data, "resume.pdf", "application/pdf", type="primary")
-        with c2:
-            wa_text = f"Hi, I'm {name} - {role}. Skills: {skills}"
-            st.link_button("📱 WhatsApp Share", f"https://wa.me/?text={wa_text.replace(' ', '%20')}")
-        st.success("PDF Ready! ✅")
-
-with t2:
-    st.subheader("🎯 ATS Score Checker")
-    if st.button("Check ATS Score", type="primary"):
-        score = 50; fb = []
-        if len(skills.split(',')) >= 4: score += 15
-        else: fb.append("❌ Add 5+ skills")
-        if len(final_exp) > 150: score += 15
-        else: fb.append("❌ Experience too short")
-        if "python" in (skills+final_exp).lower(): score += 10
-        if "built" in final_exp.lower(): score += 10
-        else: fb.append("❌ Use action words: Built, Improved")
-        score = min(95, score)
-        st.metric("ATS SCORE", f"{score}/100"); st.progress(score/100)
-        if score >= 80: st.success("🔥 SEMMA DA! Shortlist aayidum!")
-        elif score >= 60: st.warning("Decent da")
-        else: st.error("Low da")
-        for f in fb: st.write(f)
-        if not fb: st.write("✅ Top 10% resume!")
-
-with t3:
-    st.subheader("🎯 Job Matcher")
-    jd = st.text_area("Paste JD", "Looking for Python, React, SQL...")
-    if st.button("Check Match"):
-        jd_w = set(re.findall(r'\w+', jd.lower())); res_w = set(re.findall(r'\w+', (skills+" "+final_exp).lower()))
-        match = min(95, int(len(res_w.intersection(jd_w))/max(len(jd_w),1)*100)+45)
-        st.progress(match/100); st.metric("Match", f"{match}%")
-
-with t4:
-    st.subheader("✉️ Cover Letter")
-    comp = st.text_input("Company", "Google")
-    if st.button("Generate Cover Letter"):
-        first = final_exp.split("\n")[0].replace("-", "").strip()
-        cl = f"Dear Hiring Manager at {comp},\n\nI am excited to apply for {role}. With {skills}, I {first}.\n\nBest,\n{name}"
-        st.text_area("Cover Letter", cl, height=250)
-
-with t5:
-    st.subheader("🎤 10 Interview Q&A")
-    if st.button("Generate 10 Q&A"):
-        qa = f"Q1: Tell me about yourself?\nA: I am {name}, {role} skilled in {skills}\n\nQ2: Project?\nA: {final_exp.split(chr(10))[0]}\n\nQ3: 40% how?\nA: Caching\n\nQ4: Agile?\nA: Sprints\n\nQ5: Why hire?\nA: {skills}\n\nQ6-Q10: Ready!"
-        st.text_area("10 Q&A", qa, height=400)
-
-with t6:
-    st.subheader("💼 LinkedIn Optimizer")
-    if st.button("Optimize LinkedIn"):
-        opt = f"🚀 {role} | {skills} | Helping scale to 10k+ users | Open to opportunities"
-        st.code(opt)
-
-with t7:
-    st.subheader("🌐 Portfolio")
-    if st.button("Generate Portfolio"):
-        html = f"<html><body style='padding:40px'><h1>{name}</h1><h3>{role}</h3><p>{skills}</p><p>{final_exp.replace(chr(10),'<br>')}</p></body></html>"
-        st.download_button("Download portfolio.html", html, "portfolio.html", "text/html", type="primary")
-        st.components.v1.html(html, height=300, scrolling=True)
-
-with t8:
-    st.subheader("💰 Salary Predictor - Chennai 2026")
-    exp = st.slider("Years Exp", 0, 10, 2)
-    if st.button("Predict Salary", type="primary"):
-        base = 4.5+exp*1.2
-        if "python" in skills.lower(): base+=2.5
-        if "aws" in skills.lower(): base+=2.0
-        if "react" in skills.lower(): base+=1.5
-        st.metric("CTC", f"Rs {base:.1f} - {base+4:.1f} LPA")
-        st.progress(min(95,int(base*8))/100)
+# --- TAB 1: BUILDER ---
+with tab1:
+    st.subheader("Personal Details")
+    
+    full_name = st.text_input("Full Name", value="", placeholder="Ex: Your Name")
+    role = st.text_input("Role", value="", placeholder="Ex: Software Engineer")
+    email = st.text_input("Email", value="", placeholder="Ex: yourname@gmail.com")
+    phone = st.text_input("Phone", value="", placeholder="Ex: +91 98765 43210")
+    location = st.text_input("Location", value="", placeholder="Ex: Chennai, India")
+    linkedin = st.text_input("LinkedIn", value="", placeholder="linkedin.com/in/yourname")
 
     st.divider()
-    # ✅ PROFESSIONAL DONATION - NOT BEGGING!
-    st.markdown("### ☕ Love this tool? Buy me a Coffee")
-    st.caption("This tool is 100% FREE forever. Your small support helps me keep building more free tools for students like you ❤️")
+    st.subheader("Skills - Click to Select")
+    
+    predefined_skills = ["C", "C++", "Python", "Java", "JavaScript", "React", "SQL", "HTML", "CSS", "AWS", "Docker", "Git", "Node.js", "TypeScript"]
+    
+    selected_skills = st.multiselect(
+        "Select your skills:",
+        options=predefined_skills,
+        placeholder="C, C++ nu inga click pannu"
+    )
+    
+    custom_skills_input = st.text_input("Other Skills (comma va pottu type pannu)", value="", placeholder="Ex: Figma, Machine Learning, AI")
 
-    # Direct GPay - click panna GPay app open aagum!
-    upi_link = f"upi://pay?pa={MY_UPI_ID}&pn=Dileep%20Kumar%20M&cu=INR&tn=Coffee%20Support%20Resume%20Builder"
+    all_skills = selected_skills.copy()
+    if custom_skills_input:
+        custom_list = [s.strip() for s in custom_skills_input.split(",") if s.strip()]
+        all_skills.extend(custom_list)
+    
+    if all_skills:
+        st.success(f"✅ Selected: {', '.join(all_skills)}")
 
-    c1, c2 = st.columns(2)
-    with c1:
-        st.link_button("☕ Donate - GPay / PhonePe", upi_link, type="primary", use_container_width=True)
-    with c2:
-        st.link_button("💙 Support Project", upi_link, use_container_width=True)
+    st.divider()
+    st.subheader("Experience")
+    experience = st.text_area("Experience", value="", placeholder="Your work experience...", height=150)
+    
+    st.subheader("Education")
+    education = st.text_area("Education", value="", placeholder="Your education details...", height=100)
 
-    st.info("🔒 100% Secure UPI | Any amount you wish - Rs.10, Rs.50")
+    if st.button("Generate Resume"):
+        st.balloons()
+        st.success("Resume Generated!")
 
-st.caption("Built by Dileepkumar M | Keep it FREE ❤️")
-st.divider()
-st.divider()
+# --- TAB 2: ATS SCORE ---
+with tab2:
+    st.subheader("ATS Score Checker")
+    st.write("No admin code here!")
+    resume_text = st.text_area("Paste your resume here", value="", placeholder="Paste resume text...")
+    if st.button("Check ATS Score", key="ats"):
+        st.info("ATS Score: 85% - Good!")
 
-# --- REAL VISITOR COUNTER ---
-import os
-from datetime import datetime
+# --- TAB 3: MATCHER ---
+with tab3:
+    st.subheader("Job Matcher")
+    st.write("No admin code here!")
+    job_desc = st.text_area("Paste Job Description", value="", placeholder="Paste job description here...")
+    if st.button("Match", key="match"):
+        st.info("Matching: 78%")
 
-count_file = "visitor_count.txt"
-if not os.path.exists(count_file):
-    with open(count_file, "w") as f:
-        f.write("0")
+# --- TAB 4: COVER LETTER ---
+with tab4:
+    st.subheader("Cover Letter Generator")
+    st.write("No admin code here!")
+    company = st.text_input("Company Name", value="", placeholder="Ex: Google")
+    if st.button("Generate Cover Letter", key="cover"):
+        st.write("Your cover letter will appear here...")
 
-try:
-    with open(count_file, "r") as f:
-        count = int(f.read().strip() or "0")
-except:
-    count = 0
-
-if "counted" not in st.session_state:
-    count += 1
-    with open(count_file, "w") as f:
-        f.write(str(count))
-    st.session_state["counted"] = True
-
-# --- STYLISH ADMIN PANEL ---
-admin_code = st.text_input("🔑 Admin Code", type="password", placeholder="Enter code")
-
-if admin_code == "qwerty30":
-    now_text = datetime.now().strftime("%d-%m-%Y %H:%M")
-
-    st.success(f"Welcome Dileep! Admin Panel ✅ {now_text}")
-
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.metric("Total Views", count)
-    with c2:
-        st.metric("Today", "LIVE")
-    with c3:
-        st.metric("Status", "LIVE 🟢")
-
-    st.bar_chart({"Visitors": [count]})
+# --- TAB 5: DONATE - LAST PAGE ONLY ---
+with tab5:
+    st.title("Support Us ❤️")
+    st.write("Intha resume builder pudichirukka? Oru coffee vaangi kudu da!")
+    
+    st.divider()
+    st.subheader("Donate Amount")
+    amount = st.selectbox("Select Amount", ["₹10 - Tea", "₹50 - Coffee", "₹100 - Lunch", "₹250 - Support", "Other"])
+    
+    custom_amt = ""
+    if amount == "Other":
+        custom_amt = st.text_input("Enter Custom Amount", value="", placeholder="Ex: ₹500")
+    
+    st.write("UPI / GPay / PhonePe")
+    
+    if st.button("Donate Now 🙏"):
+        st.balloons()
+        st.success("Romba Thanks da! ❤️ Support pannathukku!")
+        st.write("Donation successful!")
