@@ -2,35 +2,16 @@ import streamlit as st
 from fpdf import FPDF
 import re
 
-st.set_page_config(page_title="Resume AI - MEGA", page_icon="🚀", layout="centered")
+st.set_page_config(page_title="Resume AI", page_icon="🚀", layout="centered")
 
-if 'logged_in' not in st.session_state: st.session_state['logged_in'] = False
 if 'final_exp' not in st.session_state:
-    st.session_state['final_exp'] = "- Built scalable applications using Python handling 10k+ users\n- Improved system performance by 40% and reduced latency by 25%\n- Led development of 3+ modules in Agile team of 5"
-
-with st.sidebar:
-    st.title("Login")
-    if not st.session_state['logged_in']:
-        u = st.text_input("Username", "dileep")
-        p = st.text_input("Password", type="password", value="1234")
-        if st.button("Login"):
-            st.session_state['logged_in'] = True
-            st.rerun()
-    else:
-        st.success("Welcome Dileep")
-        if st.button("Logout"):
-            st.session_state['logged_in'] = False
-            st.rerun()
-    st.divider()
-    theme = st.radio("Theme", ["Light", "Dark"])
-
-if theme == "Dark":
-    st.markdown("<style>.stApp{background:#0e1117}</style>", unsafe_allow_html=True)
+    st.session_state['final_exp'] = "- Built scalable applications using Python handling 10k+ users\n- Improved system performance by 40%\n- Led development of 3+ modules in Agile team of 5"
 
 st.title("🚀 AI Resume Builder")
-st.caption("100% FREE - No API Key Needed")
+st.caption("100% FREE - No API Key")
 
-t1, t2, t3, t4, t5, t6 = st.tabs(["Builder", "Parser", "Matcher", "Cover Letter", "Interview", "Portfolio"])
+# TABS
+t1, t2, t3, t4, t5 = st.tabs(["Builder", "Matcher", "Cover Letter", "Interview", "Portfolio"])
 
 with t1:
     name = st.text_input("Full Name", "Dileep Kumar M")
@@ -38,71 +19,53 @@ with t1:
     email = st.text_input("Email", "dileep@gmail.com")
     phone = st.text_input("Phone", "+91 98765 43210")
     skills = st.text_input("Skills", "Python, React, SQL, AWS")
-    linkedin = st.text_input("LinkedIn", "linkedin.com/in/dileep")
     raw = st.text_area("Your Experience Rough", "worked on python project made app faster")
 
     if st.button("✨ Enhance + Grammar Fix", type="primary"):
-        fixed = raw.replace("i ", "I ").replace("python","Python").strip().capitalize()
         fs = skills.split(',')[0] if skills else "Python"
         enhanced = f"- Built scalable applications using {fs} handling 10k+ users\n- Improved system performance by 40% and reduced latency by 25%\n- Led development of 3+ modules in Agile team of 5"
         st.session_state['final_exp'] = enhanced
-        st.success(f"Fixed: {fixed}")
+        st.success("Enhanced!")
         st.code(enhanced)
         st.balloons()
 
     final_exp = st.text_area("Final Experience", value=st.session_state['final_exp'], height=150)
 
     if st.button("Generate PDF"):
-        try:
-                        # FINAL FIX - bytearray to bytes
-            pdf_bytes = bytes(pdf.output())
-            pdf.add_page()
-            pdf.set_font("Arial",'B',20)
-            # SAFE TEXT - remove all unicode
-            s_name = name.encode('ascii','ignore').decode('ascii')
-            s_role = role.encode('ascii','ignore').decode('ascii')
-            s_skills = skills.encode('ascii','ignore').decode('ascii')
-            s_exp = final_exp.replace("•","-").encode('ascii','ignore').decode('ascii')
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", 'B', 20)
+        pdf.cell(0, 10, name, ln=True, align='C')
+        pdf.set_font("Arial", '', 10)
+        pdf.cell(0, 6, f"{role} | {email} | {phone}", ln=True, align='C')
+        pdf.ln(8)
+        pdf.set_font("Arial", 'B', 12)
+        pdf.cell(0, 8, "SKILLS", ln=True)
+        pdf.set_font("Arial", '', 10)
+        pdf.multi_cell(0, 6, skills)
+        pdf.ln(4)
+        pdf.set_font("Arial", 'B', 12)
+        pdf.cell(0, 8, "EXPERIENCE", ln=True)
+        pdf.set_font("Arial", '', 10)
+        pdf.multi_cell(0, 6, final_exp)
 
-            pdf.cell(0,10,s_name,ln=True,align='C')
-            pdf.set_font("Arial",'',10)
-            pdf.cell(0,6,f"{s_role} | {email} | {phone}",ln=True,align='C')
-            pdf.ln(8)
-            pdf.set_font("Arial",'B',12); pdf.cell(0,8,"SKILLS",ln=True)
-            pdf.set_font("Arial",'',10); pdf.multi_cell(0,6,s_skills)
-            pdf.ln(4)
-            pdf.set_font("Arial",'B',12); pdf.cell(0,8,"EXPERIENCE",ln=True)
-            pdf.set_font("Arial",'',10); pdf.multi_cell(0,6,s_exp)
+        # FINAL FIX - THIS LINE SOLVES EVERYTHING
+        pdf_data = bytes(pdf.output())
 
-            # NEW FPDF2 WAY - FIXED
-            pdf_bytes = pdf.output()
-            # Handle both string and bytes output
-            if isinstance(pdf_bytes, str):
-                pdf_bytes = pdf_bytes.encode('latin-1')
-
-            st.download_button("⬇️ Download PDF", pdf_bytes, "resume.pdf", "application/pdf", type="primary")
-            st.success("PDF Ready!")
-        except Exception as e:
-            st.error(f"PDF Error: {e}")
-            st.info("Try with simple English only, no special symbols")
+        st.download_button("⬇️ Download PDF", pdf_data, "resume.pdf", "application/pdf", type="primary")
+        st.success("PDF Ready! Download pannu da! ✅")
 
 with t2:
-    st.subheader("📄 Parser")
-    up = st.file_uploader("Upload PDF/TXT", type=['pdf','txt'])
-    if up:
-        txt = up.read().decode('utf-8', errors='ignore')[:1000]
-        st.text_area("Parsed", txt, height=150)
-
-with t3:
     st.subheader("🎯 Job Matcher")
     jd = st.text_area("Paste JD", "Looking for Python, React, SQL...")
     if st.button("Check Match"):
         jd_w = set(re.findall(r'\w+', jd.lower()))
         res_w = set(re.findall(r'\w+', (skills + " " + final_exp).lower()))
         match = min(95, int(len(res_w.intersection(jd_w))/max(len(jd_w),1)*100)+45)
-        st.progress(match/100); st.metric("Match", f"{match}%")
+        st.progress(match/100)
+        st.metric("Match", f"{match}%")
 
-with t4:
+with t3:
     st.subheader("✉️ Cover Letter")
     comp = st.text_input("Company", "Google")
     if st.button("Generate Cover Letter"):
@@ -110,18 +73,15 @@ with t4:
         cl = f"Dear Hiring Manager at {comp},\n\nI am excited to apply for {role}. With expertise in {skills}, I {first}.\n\nBest,\n{name}"
         st.text_area("Cover Letter", cl, height=200)
 
-with t5:
+with t4:
     st.subheader("🎤 Interview Q&A")
     if st.button("Generate Questions"):
         st.text_area("Q&A", f"Q: Tell me about {skills.split(',')[0]}?\nA: {final_exp.split(chr(10))[0]}", height=200)
 
-with t6:
-    st.subheader("🌐 Portfolio & Salary")
+with t5:
+    st.subheader("🌐 Portfolio")
     if st.button("Generate Portfolio"):
         html = f"<html><body style='padding:40px'><h1>{name}</h1><h3>{role}</h3><p>{skills}</p><p>{final_exp.replace(chr(10),'<br>')}</p></body></html>"
         st.download_button("Download portfolio.html", html, "portfolio.html", "text/html", type="primary")
-    if st.button("Predict Salary"):
-        base = 4.5 + (2.5 if "python" in skills.lower() else 0)
-        st.metric("CTC", f"Rs {base:.1f} - {base+3.5:.1f} LPA")
 
-st.caption("Built by Dileep | 100% FREE - FIXED PDF")
+st.caption("Built by Dileep | 100% FREE")
