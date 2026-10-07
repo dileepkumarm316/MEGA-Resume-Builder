@@ -8,7 +8,6 @@ if 'logged_in' not in st.session_state: st.session_state['logged_in'] = False
 if 'final_exp' not in st.session_state:
     st.session_state['final_exp'] = "- Built scalable applications using Python handling 10k+ users\n- Improved system performance by 40% and reduced latency by 25%\n- Led development of 3+ modules in Agile team of 5"
 
-# SIDEBAR - CLEAN
 with st.sidebar:
     st.title("Login")
     if not st.session_state['logged_in']:
@@ -18,14 +17,12 @@ with st.sidebar:
             st.session_state['logged_in'] = True
             st.rerun()
     else:
-        st.success("Welcome Dileep 👋")
+        st.success("Welcome Dileep")
         if st.button("Logout"):
             st.session_state['logged_in'] = False
             st.rerun()
     st.divider()
     theme = st.radio("Theme", ["Light", "Dark"])
-    st.divider()
-    st.caption("100% Free & Open Source ❤️")
 
 if theme == "Dark":
     st.markdown("<style>.stApp{background:#0e1117}</style>", unsafe_allow_html=True)
@@ -50,26 +47,43 @@ with t1:
         enhanced = f"- Built scalable applications using {fs} handling 10k+ users\n- Improved system performance by 40% and reduced latency by 25%\n- Led development of 3+ modules in Agile team of 5"
         st.session_state['final_exp'] = enhanced
         st.success(f"Fixed: {fixed}")
-        st.code(f"Enhanced: {enhanced}")
+        st.code(enhanced)
         st.balloons()
 
     final_exp = st.text_area("Final Experience", value=st.session_state['final_exp'], height=150)
 
     if st.button("Generate PDF"):
-        safe_exp = final_exp.replace("•", "-").encode('latin-1', 'ignore').decode('latin-1')
-        safe_name = name.encode('latin-1', 'ignore').decode('latin-1')
-        safe_role = role.encode('latin-1', 'ignore').decode('latin-1')
-        safe_skills = skills.encode('latin-1', 'ignore').decode('latin-1')
+        try:
+            pdf = FPDF()
+            pdf.add_page()
+            pdf.set_font("Arial",'B',20)
+            # SAFE TEXT - remove all unicode
+            s_name = name.encode('ascii','ignore').decode('ascii')
+            s_role = role.encode('ascii','ignore').decode('ascii')
+            s_skills = skills.encode('ascii','ignore').decode('ascii')
+            s_exp = final_exp.replace("•","-").encode('ascii','ignore').decode('ascii')
 
-        pdf = FPDF(); pdf.add_page()
-        pdf.set_font("Arial",'B',20); pdf.cell(0,10,safe_name,ln=True,align='C')
-        pdf.set_font("Arial",'',10); pdf.cell(0,6,f"{safe_role} | {email} | {phone}",ln=True,align='C')
-        pdf.ln(8); pdf.set_font("Arial",'B',12); pdf.cell(0,8,"SKILLS",ln=True)
-        pdf.set_font("Arial",'',10); pdf.multi_cell(0,6,safe_skills)
-        pdf.set_font("Arial",'B',12); pdf.cell(0,8,"EXPERIENCE",ln=True)
-        pdf.set_font("Arial",'',10); pdf.multi_cell(0,6,safe_exp)
-        pdf_bytes = pdf.output(dest='S').encode('latin-1')
-        st.download_button("⬇️ Download PDF", pdf_bytes, "resume.pdf", "application/pdf", type="primary")
+            pdf.cell(0,10,s_name,ln=True,align='C')
+            pdf.set_font("Arial",'',10)
+            pdf.cell(0,6,f"{s_role} | {email} | {phone}",ln=True,align='C')
+            pdf.ln(8)
+            pdf.set_font("Arial",'B',12); pdf.cell(0,8,"SKILLS",ln=True)
+            pdf.set_font("Arial",'',10); pdf.multi_cell(0,6,s_skills)
+            pdf.ln(4)
+            pdf.set_font("Arial",'B',12); pdf.cell(0,8,"EXPERIENCE",ln=True)
+            pdf.set_font("Arial",'',10); pdf.multi_cell(0,6,s_exp)
+
+            # NEW FPDF2 WAY - FIXED
+            pdf_bytes = pdf.output()
+            # Handle both string and bytes output
+            if isinstance(pdf_bytes, str):
+                pdf_bytes = pdf_bytes.encode('latin-1')
+
+            st.download_button("⬇️ Download PDF", pdf_bytes, "resume.pdf", "application/pdf", type="primary")
+            st.success("PDF Ready!")
+        except Exception as e:
+            st.error(f"PDF Error: {e}")
+            st.info("Try with simple English only, no special symbols")
 
 with t2:
     st.subheader("📄 Parser")
@@ -109,4 +123,4 @@ with t6:
         base = 4.5 + (2.5 if "python" in skills.lower() else 0)
         st.metric("CTC", f"Rs {base:.1f} - {base+3.5:.1f} LPA")
 
-st.caption("Built by Dileep | 100% FREE")
+st.caption("Built by Dileep | 100% FREE - FIXED PDF")
