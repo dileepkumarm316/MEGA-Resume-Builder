@@ -14,9 +14,9 @@ with st.form("resume_form"):
     st.subheader("Personal Details")
     col1, col2 = st.columns(2)
     with col1:
-        name = st.text_input("Full Name", "Dileep Kumar M")
+        name = st.text_input("Full Name", "Enter your Name ")
         email = st.text_input("Email", "dileep@example.com")
-        phone = st.text_input("Phone", "+91 98765 43210")
+        phone = st.text_input("Phone", "Enter your Mobile Num")
     with col2:
         linkedin = st.text_input("LinkedIn", "linkedin.com/in/dileepkumarm316")
         github = st.text_input("GitHub", "github.com/dileepkumarm316")
