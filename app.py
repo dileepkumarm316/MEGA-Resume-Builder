@@ -15,11 +15,11 @@ with st.form("resume_form"):
     col1, col2 = st.columns(2)
     with col1:
         name = st.text_input("Full Name", "Enter your Name ")
-        email = st.text_input("Email", "dileep@example.com")
+        email = st.text_input("Email", "Enter your E mail id ")
         phone = st.text_input("Phone", "Enter your Mobile Num")
     with col2:
-        linkedin = st.text_input("LinkedIn", "linkedin.com/in/dileepkumarm316")
-        github = st.text_input("GitHub", "github.com/dileepkumarm316")
+        linkedin = st.text_input("LinkedIn", "linkedin.com/in")
+        github = st.text_input("GitHub", "github.com")
         location = st.text_input("Location", "Chennai, India")
 
     st.subheader("Professional Summary")
