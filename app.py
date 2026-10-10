@@ -1,71 +1,120 @@
 import streamlit as st
 from fpdf import FPDF
+import base64
 
-st.set_page_config(page_title="Resume Builder", layout="centered")
-st.title("📄 Resume Builder")
+st.set_page_config(page_title="Resume Builder - Dileepkumar.M", page_icon="📄", layout="wide")
 
+# --- PDF CLASS ---
 class PDF(FPDF):
-    pass
+    def header(self):
+        pass
+    def footer(self):
+        pass
 
-def create_pdf(data):
-    pdf = PDF()
+def create_smart_pdf(data):
+    pdf = PDF('P', 'mm', 'A4')
     pdf.add_page()
     pdf.set_auto_page_break(auto=True, margin=15)
-    pdf.set_font("Helvetica", "B", 16)
-    pdf.cell(0, 10, data.get('name',''), ln=True, align='C')
-    pdf.ln(3)
-    pdf.set_font("Helvetica", "", 9)
-    pdf.cell(0, 5, f"{data.get('email','')} | {data.get('phone','')} | {data.get('location','')}", ln=True, align='C')
-    pdf.ln(2)
-    pdf.set_font("Helvetica", "B", 10)
-    pdf.cell(0, 6, "PROFESSIONAL SUMMARY", ln=True)
+    
+    # Name
+    pdf.set_font("Helvetica", "B", 22)
+    pdf.cell(0, 10, data.get('name','Dileepkumar.M'), ln=True, align='C')
+    
+    # Contact
     pdf.set_font("Helvetica", "", 10)
-    pdf.multi_cell(0, 5, data.get('summary',''))
-    # FIXED ERROR - NO MORE .encode ERROR
+    contact = f"{data.get('email','')} | {data.get('phone','')} | {data.get('linkedin','')} | {data.get('location','')}"
+    pdf.cell(0, 6, contact, ln=True, align='C')
+    pdf.ln(4)
+    pdf.line(10, pdf.get_y(), 200, pdf.get_y())
+    pdf.ln(4)
+
+    # Helper
+    def add_section(title, content):
+        if not content:
+            return
+        pdf.set_font("Helvetica", "B", 12)
+        pdf.set_fill_color(240,240,240)
+        pdf.cell(0, 7, f" {title.upper()}", ln=True, fill=True)
+        pdf.ln(2)
+        pdf.set_font("Helvetica", "", 10)
+        pdf.multi_cell(0, 5, content)
+        pdf.ln(3)
+
+    add_section("Professional Summary", data.get('summary',''))
+    add_section("Education", data.get('education',''))
+    add_section("Skills", data.get('skills',''))
+    add_section("Projects", data.get('projects',''))
+    add_section("Experience", data.get('experience',''))
+    add_section("Certifications", data.get('certifications',''))
+    add_section("Achievements", data.get('achievements',''))
+
+    # --- IMPORTANT FIX FOR NEW FPDF2 ---
+    # Old: pdf.output(dest='S').encode('latin-1') -> Error
+    # New: pdf.output() returns bytes directly
     return pdf.output()
 
-# ========== PERSONAL INFO - 100% EMPTY ==========
-st.header("Personal Information")
+# --- STREAMLIT UI ---
+st.markdown("## Builder")
+st.markdown("### Professional ATS-Optimized Resume Builder")
+st.success("✨ Created by Dileepkumar.M 🤍🎀")
 
-# ITHU THAAN MAIN FIX - value="" nu irukka paaru - un details illa!
-full_name = st.text_input("Full Name *", value="", placeholder="Enter Full Name")
-professional_title = st.text_input("Professional Title", value="", placeholder="Enter Professional Title")
-email = st.text_input("Email Address *", value="", placeholder="Enter Email Address")
-phone = st.text_input("Phone Number", value="", placeholder="Enter Phone Number")
-location = st.text_input("Location", value="", placeholder="Enter Location")
-linkedin = st.text_input("LinkedIn Profile URL", value="", placeholder="Enter LinkedIn URL")
-github = st.text_input("Portfolio / GitHub URL", value="", placeholder="Enter GitHub URL")
-summary = st.text_area("Professional Summary", value="", placeholder="Enter Professional Summary")
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["👤 Personal", "🎓 Education", "💻 Skills", "📁 Projects", "📜 Certs & Export"])
+
+with tab1:
+    name = st.text_input("Full Name", "Dileepkumar.M")
+    email = st.text_input("Email", "dileep@example.com")
+    phone = st.text_input("Phone", "+91 9876543210")
+    linkedin = st.text_input("LinkedIn / GitHub", "linkedin.com/in/dileepkumar")
+    location = st.text_input("Location", "Udumalpet, Tamil Nadu")
+    summary = st.text_area("Professional Summary", "Motivated and detail-oriented developer passionate about building ATS-optimized solutions...")
+
+with tab2:
+    education = st.text_area("Education Details", "B.E Computer Science - XYZ College (2022-2026) - CGPA 8.5")
+
+with tab3:
+    skills = st.text_area("Skills (comma separated)", "Python, Streamlit, FPDF, Git, GitHub, Machine Learning, SQL")
+
+with tab4:
+    projects = st.text_area("Projects", "1. Resume Builder - Built ATS resume generator using Streamlit & FPDF2\n2. My First Project - Professional portfolio")
+
+with tab5:
+    experience = st.text_area("Experience / Internship", "Intern at ABC Company - Developed internal tools")
+    certifications = st.text_area("Certifications List", "e.g., NPTEL - Introduction to IoT (Elite), AWS Cloud Practitioner, ISRO Certification")
+    achievements = st.text_area("Achievements", "Won coding contest, etc.")
+
+# Collect data
+resume_data = {
+    "name": name,
+    "email": email,
+    "phone": phone,
+    "linkedin": linkedin,
+    "location": location,
+    "summary": summary,
+    "education": education,
+    "skills": skills,
+    "projects": projects,
+    "experience": experience,
+    "certifications": certifications,
+    "achievements": achievements
+}
 
 st.divider()
-st.header("Skills")
-skills = st.text_input("Additional Skills (comma separated)", value="", placeholder="e.g., PCB Design, Figma, Flutter")
-
-st.divider()
-st.header("Internships / Training")
-role = st.text_input("Role / Position", value="", placeholder="e.g., Embedded Systems Intern")
-org = st.text_input("Organization Name", value="", placeholder="e.g., TCS, ISRO")
-duration = st.text_input("Duration", value="", placeholder="e.g., May 2024 - July 2024")
-responsibilities = st.text_area("Key Responsibilities", value="", placeholder="Enter Responsibilities")
-
-st.divider()
-st.header("Education")
-degree = st.text_input("Degree / Program", value="", placeholder="e.g., B.E ECE")
-college = st.text_input("College / University", value="", placeholder="e.g., Vels University")
-year = st.text_input("Year", value="", placeholder="e.g., 2022-2026")
-
-st.divider()
-if st.button("Generate Resume", type="primary", use_container_width=True):
-    if not full_name or not email:
-        st.warning("Name & Email fill pannu da!")
-    else:
-        data = {
-            "name": full_name,
-            "email": email,
-            "phone": phone,
-            "location": location,
-            "summary": summary
-        }
-        pdf_bytes = create_pdf(data)
-        st.success("Resume Ready!")
-        st.download_button("📥 Download PDF", data=pdf_bytes, file_name="Resume.pdf", mime="application/pdf", use_container_width=True)
+if st.button("📥 Generate Professional Resume", type="primary", use_container_width=True):
+    try:
+        pdf_data = create_smart_pdf(resume_data)
+        st.success("Resume Generated Successfully! ✅")
+        
+        b64 = base64.b64encode(pdf_data).decode()
+        href = f'<a href="data:application/octet-stream;base64,{b64}" download="{name}_Resume.pdf" style="text-decoration:none;"><button style="background:#ff4b4b;color:white;border:none;padding:12px 24px;border-radius:8px;width:100%;font-weight:bold;cursor:pointer;">⬇️ Download PDF Resume</button></a>'
+        st.markdown(href, unsafe_allow_html=True)
+        
+        st.download_button(
+            label="📄 Download Resume (Alternative)",
+            data=pdf_data,
+            file_name=f"{name}_Resume.pdf",
+            mime="application/pdf",
+            use_container_width=True
+        )
+    except Exception as e:
+        st.error(f"Error: {e}")
+        st.info("Tip: Make sure requirements.txt has 'fpdf2' not 'fpdf'")
